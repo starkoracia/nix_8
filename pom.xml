@@ -6,7 +6,25 @@
 
     <groupId>com.starkoracia</groupId>
     <artifactId>nix_8</artifactId>
+    <packaging>pom</packaging>
     <version>1.0</version>
 
+    <properties>
+        <java.version>17</java.version>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <maven-compiler-plugin.version>3.1</maven-compiler-plugin.version>
+        <maven-shade-plugin.version>3.2.4</maven-shade-plugin.version>
+    </properties>
 
+    <modules>
+        <module>hw_1_base_operations_denys_isaiev</module>
+    </modules>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>31.0.1-jre</version>
+        </dependency>
+    </dependencies>
 </project>
