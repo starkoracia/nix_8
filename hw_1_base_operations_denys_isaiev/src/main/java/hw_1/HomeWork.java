@@ -3,6 +3,8 @@ package hw_1;
 import com.google.common.collect.ImmutableSortedMultiset;
 import com.google.common.collect.SortedMultiset;
 
+import java.io.PrintStream;
+import java.io.UnsupportedEncodingException;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -34,7 +36,7 @@ public class HomeWork {
         int finishHour = (startTime + lessonsTime) / 60;
         int finishMinutes = (startTime + lessonsTime) % 60;
 
-        System.out.printf("Выходные данные: %s : %s\n",finishHour, finishMinutes);
+        System.out.printf("Выходные данные: %d : %02d\n",finishHour, finishMinutes);
     }
 
     private static void printLettersSet(SortedMultiset<String> lettersSet) {
@@ -46,7 +48,12 @@ public class HomeWork {
     }
 
     private static String getConsoleString() {
-        Scanner console = new Scanner(System.in);
+        Scanner console = new Scanner(System.in, "CP866");
+        try {
+            System.setOut(new PrintStream(System.out, true, "CP866"));
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
         return console.nextLine();
     }
 
