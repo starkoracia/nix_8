@@ -1,97 +1,114 @@
 package ua.com.alevel;
 
-import com.google.common.collect.ImmutableSortedMultiset;
-import com.google.common.collect.SortedMultiset;
 import lombok.Cleanup;
-import ua.com.alevel.IntegersSumFromString.IntegersSumFromString;
+import ua.com.alevel.CountingAndSortingLetters.CountingAndSortingLetters;
+import ua.com.alevel.endsOfLessons.EndsOfLessons;
+import ua.com.alevel.integersSumFromString.IntegersSumFromString;
+import ua.com.alevel.interfaces.RunnableModuleApp;
 
 import java.io.*;
-import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 public class HomeworkStarter {
+    private static InputStreamReader inputStreamReader;
+
+    private static void initialize() throws UnsupportedEncodingException {
+        String charsetName;
+        Console console = System.console();
+        if (console != null) {
+            charsetName = console.charset().name();
+            System.setOut(new PrintStream(System.out, true, charsetName));
+            inputStreamReader = new InputStreamReader(System.in, charsetName);
+        } else {
+            inputStreamReader = new InputStreamReader(System.in);
+        }
+    }
 
     public static void run() throws IOException {
-        @Cleanup BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
-        new IntegersSumFromString().start(reader);
+        initialize();
+        @Cleanup BufferedReader reader = new BufferedReader(inputStreamReader);
+        mainLoopRun(reader);
     }
-//
-//
-//    public static void hwNumberTwoStart() {
-//        System.out.print("\n\t**Буквенная сортировка**\nВходные данные: ");
-//        printLettersSet(
-//                sortedMultisetFromLetters(
-//                        engRuLettersFromString(
-//                                getConsoleString())));
-//
-//    }
-//
-//    public static void hwNumberThreeStart() {
-//        System.out.print("\n\t**Время окончания урока**\nВходные данные: ");
-//
-//        int a = getValidIntFromConsole();
-//        int startTime = 60 * 9;
-//        int lessonsTime = (45 * a) + ((a / 2 * 5) + ((a - 1) / 2 * 15));
-//        int finishHour = (startTime + lessonsTime) / 60;
-//        int finishMinutes = (startTime + lessonsTime) % 60;
-//
-//        System.out.printf("Выходные данные: %d : %02d\n", finishHour, finishMinutes);
-//    }
-//
-//    private static void printLettersSet(SortedMultiset<String> lettersSet) {
-//        System.out.println("Выходные данные: ");
-//        lettersSet.entrySet()
-//                .forEach(entry -> {
-//                    System.out.printf("%s - %s\n", entry.getElement(), entry.getCount());
-//                });
-//    }
-//
-//
-//    private static int getConsoleInt() {
-//        Scanner console = new Scanner(System.in);
-//        return console.nextInt();
-//    }
-//
-//    private static int getValidIntFromConsole() {
-//        int consoleInt = 0;
-//        while (true) {
-//            try {
-//                consoleInt = getConsoleInt();
-//                if (consoleInt > 0 && consoleInt <= 10) {
-//                    break;
-//                } else {
-//                    printInvalidEnter();
-//                }
-//            } catch (InputMismatchException exception) {
-//                printInvalidEnter();
-//            }
-//        }
-//        return consoleInt;
-//    }
-//
-//    private static void printInvalidEnter() {
-//        System.out.println("Не верный ввод: введите количество уроков от 1 до 10");
-//        System.out.print("\n\t**Время окончания урока**\nВходные данные: ");
-//    }
-//
-//
-//    public static List<String> engRuLettersFromString(String inputString) {
-//        List<String> letters = new ArrayList<>();
-//        Matcher matcher = Pattern.compile("[a-zA-Zа-яА-Я]").matcher(inputString);
-//        while (matcher.find()) {
-//            letters.add(matcher.group());
-//        }
-//        return letters;
-//    }
-//
-//    private static SortedMultiset<String> sortedMultisetFromLetters(List<String> letters) {
-//        return ImmutableSortedMultiset.copyOf(
-//                letters.stream()
-//                        .sorted()
-//                        .collect(Collectors.toList()));
-//    }
-//
-//
+
+    private static void mainLoopRun(BufferedReader reader) throws IOException {
+        while (true) {
+            printChooseApp();
+
+            String command = reader.readLine();
+            switch (command.toLowerCase()) {
+                case "1" -> {
+                    processingModuleApp(reader, new IntegersSumFromString());
+                }
+                case "2" -> {
+                    processingModuleApp(reader, new CountingAndSortingLetters());
+                }
+                case "3" -> {
+                    processingModuleApp(reader, new EndsOfLessons());
+                }
+                case "q", "й" -> {
+                    System.exit(0);
+                }
+                default -> {
+                    clearScreen();
+                }
+            }
+        }
+    }
+
+    private static void processingModuleApp(BufferedReader reader, RunnableModuleApp moduleApp) throws IOException {
+        String command;
+        while (true) {
+            clearScreen();
+            moduleApp.start(reader);
+            printRepeatOrExit();
+            command = reader.readLine();
+            if (isExit(command)) {
+                clearScreen();
+                break;
+            }
+        }
+    }
+
+    private static boolean isExit(String command) {
+        return command.equalsIgnoreCase("q")
+                || command.equalsIgnoreCase("й");
+    }
+
+    private static void printRepeatOrExit() {
+        System.out.println(("""
+                
+                Введите "q" чтобы выйти из приложения. 
+                "Enter" чтобы повторить  
+                -> """));
+    }
+
+    private static void printChooseApp() {
+        System.out.print("""
+                        
+                        **Выберите нужное приложение в модуле**
+                        
+                 1) "Сумма чисел в строке" - нахождение суммы целых, положительных и отрицательных
+                                            чисел в введенной строке.
+                        
+                 2) "Буквенная сортировка" - подсчет и сортировка буквенных символов латиницы и кирилицы
+                                            в введенной строке.
+                                    
+                 3) "Конец уроков" - подсчет времени окончания введенного номера урока с учетом начала в 9:00.
+                    
+                                    
+                Введите номер нужного приложения "1-3",
+                Для выхода введите "q"
+                ->\040""");
+    }
+
+    public static void clearScreen() {
+        //Clears Screen in java
+        try {
+            if (System.getProperty("os.name").contains("Windows"))
+                new ProcessBuilder("cmd", "/c", "cls").inheritIO().start().waitFor();
+            else
+                Runtime.getRuntime().exec("clear");
+        } catch (IOException | InterruptedException ignored) {
+        }
+    }
+
 }
