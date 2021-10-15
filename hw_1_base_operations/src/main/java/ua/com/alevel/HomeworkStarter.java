@@ -1,12 +1,13 @@
 package ua.com.alevel;
 
 import lombok.Cleanup;
-import ua.com.alevel.CountingAndSortingLetters.CountingAndSortingLetters;
 import ua.com.alevel.endsOfLessons.EndsOfLessons;
 import ua.com.alevel.integersSumFromString.IntegersSumFromString;
 import ua.com.alevel.interfaces.RunnableModuleApp;
+import ua.com.alevel.сountingAndSortingLetters.CountingAndSortingLetters;
 
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 
 public class HomeworkStarter {
     private static InputStreamReader inputStreamReader;
@@ -19,7 +20,8 @@ public class HomeworkStarter {
             System.setOut(new PrintStream(System.out, true, charsetName));
             inputStreamReader = new InputStreamReader(System.in, charsetName);
         } else {
-            inputStreamReader = new InputStreamReader(System.in);
+            System.setOut(new PrintStream(System.out, true, StandardCharsets.UTF_8));
+            inputStreamReader = new InputStreamReader(System.in, StandardCharsets.UTF_8);
         }
     }
 

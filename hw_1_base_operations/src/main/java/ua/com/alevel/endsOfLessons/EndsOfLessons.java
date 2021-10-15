@@ -25,10 +25,10 @@ public class EndsOfLessons implements RunnableModuleApp {
         System.out.printf(" Выходные данные: %d : %02d\n", finishHour, finishMinutes);
     }
 
-    private boolean isValidLesson(String inputSting) {
+    private boolean isValidLesson(String inputString) {
         int consoleInt;
         try {
-            consoleInt = Integer.parseInt(inputSting);
+            consoleInt = Integer.parseInt(inputString);
             if (consoleInt > 0 && consoleInt <= 10) {
                 return true;
             }
