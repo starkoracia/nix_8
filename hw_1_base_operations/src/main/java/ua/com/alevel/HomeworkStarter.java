@@ -15,7 +15,7 @@ public class HomeworkStarter {
     private static void initialize() throws UnsupportedEncodingException {
         String charsetName;
         Console console = System.console();
-        if (console != null) {
+        if (console != null && System.getProperty("os.name").contains("Windows")) {
             charsetName = console.charset().name();
             System.setOut(new PrintStream(System.out, true, charsetName));
             inputStreamReader = new InputStreamReader(System.in, charsetName);
