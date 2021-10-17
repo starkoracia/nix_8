@@ -9,7 +9,9 @@ import ua.com.alevel.сountingAndSortingLetters.CountingAndSortingLetters;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 
+
 public class HomeworkStarter {
+
     private static InputStreamReader inputStreamReader;
 
     private static void initialize() throws UnsupportedEncodingException {

@@ -9,14 +9,13 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>hw_1_base_operations</artifactId>
-    <packaging>jar</packaging>
+    <artifactId>hw_2_strings</artifactId>
 
     <properties>
         <maven.compiler.source>${java.version}</maven.compiler.source>
         <maven.compiler.target>${java.version}</maven.compiler.target>
-        <app.main.class>ua.com.alevel.BaseOperationsMain</app.main.class>
-        <app.moduleName>hw_1</app.moduleName>
+        <app.main.class></app.main.class>
+        <app.moduleName>reversestring</app.moduleName>
     </properties>
 
     <build>
@@ -54,7 +53,7 @@
                             </transformers>
                             <artifactSet>
                                 <includes>
-                                    <include>com.google.guava:guava</include>
+
                                 </includes>
                             </artifactSet>
                         </configuration>
@@ -63,4 +62,5 @@
             </plugin>
         </plugins>
     </build>
+
 </project>
