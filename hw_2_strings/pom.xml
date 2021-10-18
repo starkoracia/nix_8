@@ -18,8 +18,9 @@
         <app.moduleName>reversestring</app.moduleName>
     </properties>
 
+
     <build>
-        <finalName>${app.moduleName}</finalName>
+        <finalName>${app.moduleName}.original</finalName>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -42,9 +43,10 @@
                             <goal>shade</goal>
                         </goals>
                         <configuration>
-                            <finalName>${app.moduleName}_sh</finalName>
+                            <finalName>${app.moduleName}</finalName>
                             <transformers>
-                                <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                                <transformer
+                                        implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
                                     <mainClass>${app.main.class}</mainClass>
                                     <manifestEntries>
 
