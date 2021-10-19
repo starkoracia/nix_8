@@ -1,4 +1,4 @@
-package ua.com.alevel;
+package ua.com.alevel.utils;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -33,7 +33,7 @@ public final class StringReverser {
      * in the string, remaining all spaces, on their places.
      *
      * @param src any String, which you want to reverse.
-     * @param isWordsReverse - if true - reverses only words, if false, work same {@link StringReverser#reverse(String)}
+     * @param isWordsReverse if true - reverses only words, if false, work same {@link StringReverser#reverse(String)}
      * @return returns reversed String, according to method description.
      * */
     public static String reverse(String src, boolean isWordsReverse) {
@@ -62,6 +62,19 @@ public final class StringReverser {
      * @return returns reversed String, according to method description.
      * */
     public static String reverse(String src, String destString) {
+        return reverse(src, destString, false);
+    }
+
+    /**
+     * Implementing a reverse method, that takes a src String and destString as second param,
+     * and reverses all matches of destString in src String.
+     *
+     * @param src any String, which you want to reverse.
+     * @param destString all matches with this param, will be reverse in src String.
+     * @param isWordsReverse if true - reverses only words, if false, work same {@link StringReverser#reverse(String, String)}
+     * @return returns reversed String, according to method description.
+     * */
+    public static String reverse(String src, String destString, boolean isWordsReverse) {
         StringBuilder outString = new StringBuilder("");
         String[] words = src.split(destString);
         Matcher spaceMatcher = Pattern.compile(destString).matcher(src);
@@ -69,7 +82,7 @@ public final class StringReverser {
         for (String s : words) {
             outString.append(s);
             if (spaceMatcher.find()) {
-                outString.append(reverse(spaceMatcher.group()));
+                outString.append(reverse(spaceMatcher.group(), isWordsReverse));
             }
         }
         return outString.toString();
