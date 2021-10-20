@@ -1,6 +1,10 @@
 package ua.com.alevel;
 
 import lombok.Cleanup;
+import ua.com.alevel.interfaces.RunnableMethodTest;
+import ua.com.alevel.starters.IndexReverse;
+import ua.com.alevel.starters.MainReverse;
+import ua.com.alevel.starters.SubstringReverse;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
@@ -36,13 +40,22 @@ public class HomeworkStarter {
             String command = reader.readLine();
             switch (command.toLowerCase()) {
                 case "1" -> {
-
+                    processingModuleApp(reader, new MainReverse(), false);
                 }
                 case "2" -> {
-
+                    processingModuleApp(reader, new MainReverse(), true);
                 }
                 case "3" -> {
-
+                    processingModuleApp(reader, new SubstringReverse(), false);
+                }
+                case "4" -> {
+                    processingModuleApp(reader, new SubstringReverse(), true);
+                }
+                case "5" -> {
+                    processingModuleApp(reader, new IndexReverse(), false);
+                }
+                case "6" -> {
+                    processingModuleApp(reader, new IndexReverse(), true);
                 }
                 case "q", "й" -> {
                     System.exit(0);
@@ -54,13 +67,11 @@ public class HomeworkStarter {
         }
     }
 
-    private static void processingModuleApp(BufferedReader reader) throws IOException {
+    private static void processingModuleApp(BufferedReader reader, RunnableMethodTest moduleApp, boolean isWordsReverse) throws IOException {
         String command;
         while (true) {
             clearScreen();
-
-//            ====>
-
+            moduleApp.start(reader, isWordsReverse);
             printRepeatOrExit();
             command = reader.readLine();
             if (isExit(command)) {
@@ -77,7 +88,7 @@ public class HomeworkStarter {
 
     private static void printRepeatOrExit() {
         System.out.println(("""
-                
+                                
                 Введите "q" чтобы выйти из приложения. 
                 "Enter" чтобы повторить  
                 -> """));
@@ -87,7 +98,7 @@ public class HomeworkStarter {
         System.out.print("""
                         
                         **Выберите нужный вам метод для теста**
-                        
+                      
                  1) Стандарный
                     <- Принимает строку.
                     -> Возвращает перевернутую строку.
@@ -112,10 +123,19 @@ public class HomeworkStarter {
                     -> Возвращает то же, что и 3-й(По подстроке), с пословным переворотом.
                     
                  5) По индексу
-                    <- Принимает строку и два индекска(целых числа)
-                    -> Возвращает   
+                    <- Принимает строку и два индекска(целых числа) подстроки.
+                    -> Возвращает строку с перевернутой подстрокой в указанном диапозоне.
+                       - Оба индекса, могут быть как начальным так и конечным, в зависимости
+                         от того, который больше.
+                       - При указании индекса, выходящего за пределы строки, он будет приравнен
+                         к ближайщему крайнему индексу строки.  
+                         
+                 6) По индексу (Пословный)
+                    <- Принимает строку, два индекска(целых числа) подстроки.
+                    -> Возвращает то же, что и 5-й(По индексу), с пословным переворотом.
+                    
                                     
-                Введите номер нужного приложения "1-3",
+                Введите номер нужного метода "1-6",
                 Для выхода введите "q"
                 ->\040""");
     }

@@ -79,13 +79,18 @@ public final class StringReverser {
         String[] words = src.split(destString);
         Matcher spaceMatcher = Pattern.compile(destString).matcher(src);
 
-        for (String s : words) {
-            outString.append(s);
-            if (spaceMatcher.find()) {
-                outString.append(reverse(spaceMatcher.group(), isWordsReverse));
+        if (words.length != 0) {
+            for (String s : words) {
+                outString.append(s);
+                if (spaceMatcher.find()) {
+                    outString.append(reverse(spaceMatcher.group(), isWordsReverse));
+                }
             }
+            return outString.toString();
+        } else if (spaceMatcher.find()) {
+            return reverse(spaceMatcher.group(), isWordsReverse);
         }
-        return outString.toString();
+        return src;
     }
 
     /**

@@ -12,7 +12,7 @@ public class EndsOfLessons implements RunnableModuleApp {
         System.out.print("\n\t**Время окончания урока**\n\n Входные данные: ");
 
         String numOfLesson = reader.readLine();
-        if (!isValidLesson(numOfLesson)) {
+        if (isNotValidLesson(numOfLesson)) {
             printInvalidEnter();
             return;
         }
@@ -25,17 +25,17 @@ public class EndsOfLessons implements RunnableModuleApp {
         System.out.printf(" Выходные данные: %d : %02d\n", finishHour, finishMinutes);
     }
 
-    private boolean isValidLesson(String inputString) {
+    private boolean isNotValidLesson(String inputString) {
         int consoleInt;
         try {
             consoleInt = Integer.parseInt(inputString);
             if (consoleInt > 0 && consoleInt <= 10) {
-                return true;
+                return false;
             }
         } catch (InputMismatchException | NumberFormatException exception) {
-            return false;
+            return true;
         }
-        return false;
+        return true;
     }
 
     private void printInvalidEnter() {

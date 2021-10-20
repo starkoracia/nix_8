@@ -14,7 +14,7 @@
     <properties>
         <maven.compiler.source>${java.version}</maven.compiler.source>
         <maven.compiler.target>${java.version}</maven.compiler.target>
-        <app.main.class></app.main.class>
+        <app.main.class>ua.com.alevel.StringsMain</app.main.class>
         <app.moduleName>reversestring</app.moduleName>
     </properties>
 
