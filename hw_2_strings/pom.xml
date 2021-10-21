@@ -12,11 +12,17 @@
     <artifactId>hw_2_strings</artifactId>
 
     <properties>
-        <maven.compiler.source>${java.version}</maven.compiler.source>
-        <maven.compiler.target>${java.version}</maven.compiler.target>
         <app.main.class>ua.com.alevel.StringsMain</app.main.class>
-        <app.moduleName>reversestring</app.moduleName>
+        <app.moduleName>hw_2_strings</app.moduleName>
     </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.starkoracia</groupId>
+            <artifactId>reversestring</artifactId>
+            <version>1.0</version>
+        </dependency>
+    </dependencies>
 
 
     <build>

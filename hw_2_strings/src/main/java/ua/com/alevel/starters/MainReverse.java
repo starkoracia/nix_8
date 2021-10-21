@@ -2,7 +2,7 @@ package ua.com.alevel.starters;
 
 import ua.com.alevel.interfaces.RunnableMethodTest;
 
-import static ua.com.alevel.utils.StringReverser.*;
+import static ua.com.alevel.StringReverser.*;
 
 import java.io.BufferedReader;
 import java.io.IOException;

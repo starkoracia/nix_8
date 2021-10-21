@@ -5,7 +5,7 @@ import ua.com.alevel.interfaces.RunnableMethodTest;
 import java.io.BufferedReader;
 import java.io.IOException;
 
-import static ua.com.alevel.utils.StringReverser.reverse;
+import static ua.com.alevel.StringReverser.reverse;
 
 public class SubstringReverse implements RunnableMethodTest {
     @Override

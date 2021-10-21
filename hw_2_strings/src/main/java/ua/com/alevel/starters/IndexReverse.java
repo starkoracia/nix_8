@@ -1,13 +1,12 @@
 package ua.com.alevel.starters;
 
 import ua.com.alevel.interfaces.RunnableMethodTest;
-import ua.com.alevel.utils.StringReverser;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.InputMismatchException;
 
-import static ua.com.alevel.utils.StringReverser.reverse;
+import static ua.com.alevel.StringReverser.reverse;
 
 public class IndexReverse implements RunnableMethodTest {
     @Override
