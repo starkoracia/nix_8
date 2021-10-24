@@ -20,6 +20,7 @@
         <module>hw_1_base_operations</module>
         <module>hw_2_strings</module>
         <module>reversestring</module>
+        <module>hw_3_start_oop</module>
     </modules>
 
 
@@ -35,6 +36,18 @@
             <artifactId>lombok</artifactId>
             <version>1.18.22</version>
             <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.massisframework</groupId>
+            <artifactId>j-text-utils</artifactId>
+            <version>0.3.4</version>
+        </dependency>
+
+        <dependency>
+            <groupId>de.vandermeer</groupId>
+            <artifactId>asciitable</artifactId>
+            <version>0.3.2</version>
         </dependency>
     </dependencies>
 
