@@ -28,19 +28,20 @@ public class MessagesController implements ConsoleController {
     public void addMessage(BufferedReader reader) throws IOException {
         this.reader = reader;
         if (DBHelperUtil.getAuthUser() == null) {
-            login();
+            login(reader);
         }
         if (DBHelperUtil.getAuthUser() != null) {
             createMessage();
         }
     }
 
-    private void login() throws IOException {
+    public void login(BufferedReader reader) throws IOException {
+        this.reader = reader;
         clearScreen();
         String email;
 
-        System.out.print(" Укажите ваш email:\n -> ");
-        email = reader.readLine();
+        System.out.print("\n  ** Вход в систему **\n\n Укажите ваш email:\n -> ");
+        email = this.reader.readLine();
         if (isEmailNotExist(email) || email.equals("")) {
             System.out.println("\n Пользователя с таким email не существует");
             enterToContinue();
@@ -49,7 +50,7 @@ public class MessagesController implements ConsoleController {
         User userFromDB = getUserFromDB(email);
 
         System.out.print(" Введите пароль:\n -> ");
-        String password = reader.readLine();
+        String password = this.reader.readLine();
 
         if(isPasswordNotValid(userFromDB, password)) {
             System.out.println("\n Пароль не верный");
@@ -58,6 +59,8 @@ public class MessagesController implements ConsoleController {
         }
 
         DBHelperUtil.setAuthUser(userFromDB);
+        System.out.printf("Вы вошли как \"%s\"", userFromDB.getName());
+        enterToContinue();
         clearScreen();
     }
 

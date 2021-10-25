@@ -10,8 +10,7 @@ public final class DBHelperUtil {
 
     private static User authUser;
 
-    private DBHelperUtil() {
-    }
+    private DBHelperUtil() { }
 
     public static String generateIdForEntity(SimpleList<? extends EntityBase> entities) {
         String id = UUID.randomUUID().toString();

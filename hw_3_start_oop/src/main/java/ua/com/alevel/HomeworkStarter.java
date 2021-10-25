@@ -47,19 +47,23 @@ public class HomeworkStarter {
     }
 
     private static void mainLoopRun(BufferedReader reader) throws IOException {
+        MessagesController messagesController = new MessagesController();
         while (true) {
             printChooseApp();
 
             String command = reader.readLine();
             switch (command.toLowerCase()) {
                 case "1" -> {
-                    new MessagesController().start(reader);
+                    messagesController.start(reader);
                 }
                 case "2" -> {
-                    new MessagesController().addMessage(reader);
+                    messagesController.addMessage(reader);
                 }
                 case "3" -> {
                     new UsersManagementController().start(reader);
+                }
+                case "4" -> {
+                    messagesController.login(reader);
                 }
                 case "q", "й" -> {
                     System.exit(0);
@@ -95,6 +99,8 @@ public class HomeworkStarter {
                  2) Оставить комментарий "".
                                    
                  3) Управление пользователями.
+                 
+                 4) Залогиниться
                   
                                  
                 Введите номер пункта меню "1-3",

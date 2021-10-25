@@ -213,11 +213,14 @@ public class UsersManagementController implements ConsoleController {
     private void createUser() throws IOException {
         clearScreen();
         String email;
-        do {
-            System.out.print(" Укажите уникальный email, он же будет являться логином:\n -> ");
-            email = reader.readLine();
-        } while (isEmailExist(email) || !email.equals(""));
 
+        System.out.print(" Укажите уникальный email, он же будет являться логином:\n -> ");
+        email = reader.readLine();
+        if (isEmailExist(email) || email.equals("")) {
+            System.out.printf("\n Пользователь с email \"%s\" существует\n", email);
+            enterToContinue();
+            return;
+        }
         System.out.print(" Создайте пароль:\n -> ");
         String password = reader.readLine();
         System.out.print(" Укажите имя пользователя:\n -> ");
