@@ -1,1 +1,1 @@
-call clear && java -jar target/hw_1_sh.jar && pause
+java -jar target/hw_1_sh.jar && pause

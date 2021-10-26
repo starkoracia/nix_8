@@ -1,1 +1,1 @@
-call clear && java -jar target/reversestring.jar && pause
+call clear && java -jar target/hw_2_strings.jar && pause
