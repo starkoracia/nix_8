@@ -18,6 +18,14 @@
         <app.main.class>ua.com.alevel.BaseOperationsMain</app.main.class>
         <app.moduleName>hw_1</app.moduleName>
     </properties>
+    <dependencies>
+        <dependency>
+            <groupId>org.reflections</groupId>
+            <artifactId>reflections</artifactId>
+            <version>0.10.1</version>
+            <scope>compile</scope>
+        </dependency>
+    </dependencies>
 
     <build>
         <finalName>${app.moduleName}</finalName>

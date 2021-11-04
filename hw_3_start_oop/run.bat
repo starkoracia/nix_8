@@ -1,1 +1,3 @@
-call clear && java -jar target/hw_3_start_oop.jar && pause
+call clear
+call java -jar target/hw_3_start_oop.jar
+call pause

@@ -16,6 +16,14 @@
         <maven.compiler.target>17</maven.compiler.target>
         <jar.name>reversestring</jar.name>
     </properties>
+    <dependencies>
+        <dependency>
+            <groupId>org.reflections</groupId>
+            <artifactId>reflections</artifactId>
+            <version>0.10.1</version>
+            <scope>compile</scope>
+        </dependency>
+    </dependencies>
 
     <build>
         <finalName>${jar.name}.original</finalName>

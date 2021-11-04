@@ -11,7 +11,7 @@ import java.nio.file.attribute.UserPrincipalNotFoundException;
 
 public class MessageServiceImpl implements MessageService {
     private static MessageServiceImpl instance;
-    private static MessageDaoImpl messageDao;
+    private final MessageDaoImpl messageDao;
 
     private MessageServiceImpl() {
         messageDao = MessageDaoImpl.getInstance();

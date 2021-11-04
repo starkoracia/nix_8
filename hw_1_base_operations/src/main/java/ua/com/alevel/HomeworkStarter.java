@@ -1,10 +1,10 @@
 package ua.com.alevel;
 
 import lombok.Cleanup;
-import ua.com.alevel.endsOfLessons.EndsOfLessons;
-import ua.com.alevel.integersSumFromString.IntegersSumFromString;
+import ua.com.alevel.endsoflessons.EndsOfLessons;
+import ua.com.alevel.integerssumsromstring.IntegersSumFromString;
 import ua.com.alevel.interfaces.RunnableModuleApp;
-import ua.com.alevel.сountingAndSortingLetters.CountingAndSortingLetters;
+import ua.com.alevel.сountingandsortingletters.CountingAndSortingLetters;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;

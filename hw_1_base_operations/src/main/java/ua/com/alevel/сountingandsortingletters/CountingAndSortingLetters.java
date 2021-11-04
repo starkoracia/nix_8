@@ -1,4 +1,4 @@
-package ua.com.alevel.сountingAndSortingLetters;
+package ua.com.alevel.сountingandsortingletters;
 
 import com.google.common.collect.ImmutableSortedMultiset;
 import com.google.common.collect.SortedMultiset;

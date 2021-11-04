@@ -1,4 +1,4 @@
-package ua.com.alevel.endsOfLessons;
+package ua.com.alevel.endsoflessons;
 
 import ua.com.alevel.interfaces.RunnableModuleApp;
 

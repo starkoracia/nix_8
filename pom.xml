@@ -21,6 +21,10 @@
         <module>hw_2_strings</module>
         <module>reversestring</module>
         <module>hw_3_start_oop</module>
+        <module>starko_spring</module>
+        <module>di_test</module>
+        <module>module_1</module>
+        <module>demoFX</module>
     </modules>
 
 
@@ -49,6 +53,14 @@
             <artifactId>asciitable</artifactId>
             <version>0.3.2</version>
         </dependency>
+
+        <dependency>
+            <groupId>org.burningwave</groupId>
+            <artifactId>core</artifactId>
+            <version>12.12.5</version>
+        </dependency>
+
+
     </dependencies>
 
 

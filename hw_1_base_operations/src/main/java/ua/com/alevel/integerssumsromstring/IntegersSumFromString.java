@@ -1,4 +1,4 @@
-package ua.com.alevel.integersSumFromString;
+package ua.com.alevel.integerssumsromstring;
 
 import ua.com.alevel.interfaces.RunnableModuleApp;
 
