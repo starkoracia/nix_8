@@ -1,22 +1,9 @@
 package ua.com.alevel.utils.simplearray.impl;
 
-import de.vandermeer.asciitable.AsciiTable;
-import de.vandermeer.asciitable.CWC_LongestWord;
-import de.vandermeer.asciithemes.TA_Grid;
-import de.vandermeer.asciithemes.TA_GridConfig;
-import de.vandermeer.asciithemes.a7.A7_Grids;
-import de.vandermeer.asciithemes.u8.U8_Grids;
-import de.vandermeer.skb.interfaces.transformers.textformat.TextAlignment;
-import dnl.utils.text.table.TextTable;
-import ua.com.alevel.db.impl.UserDBImpl;
-import ua.com.alevel.entity.User;
-import ua.com.alevel.service.impl.UserServiceImpl;
-import ua.com.alevel.utils.ConsoleHelperUtil;
 import ua.com.alevel.utils.simplearray.Simple;
 
 import java.util.Arrays;
 import java.util.Iterator;
-
 
 public class SimpleList<E> implements Simple<E> {
 
