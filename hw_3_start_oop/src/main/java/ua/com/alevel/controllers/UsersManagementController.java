@@ -54,6 +54,7 @@ public class UsersManagementController implements ConsoleController {
         }
     }
 
+
     private void editUser() throws IOException {
         clearScreen();
         System.out.print(" Введите email для изменения пользователя:\n -> ");

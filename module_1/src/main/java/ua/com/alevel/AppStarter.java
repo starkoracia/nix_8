@@ -1,6 +1,7 @@
 package ua.com.alevel;
 
 import lombok.Cleanup;
+import ua.com.alevel.binarytree.BinaryTreeController;
 import ua.com.alevel.brackets.BracketsController;
 import ua.com.alevel.interfaces.controllers.ConsoleController;
 import ua.com.alevel.interfaces.starter.Starter;
@@ -35,7 +36,7 @@ public class AppStarter implements Starter {
         mainLoopRun(reader);
     }
 
-    private static void mainLoopRun(BufferedReader reader) throws IOException {
+    private void mainLoopRun(BufferedReader reader) throws IOException {
         while (true) {
             printChooseApp();
 
@@ -52,6 +53,9 @@ public class AppStarter implements Starter {
                 }
                 case "4" -> {
                     processingModuleApp(reader, new BracketsController());
+                }
+                case "5" -> {
+                     new BinaryTreeController().start(reader);
                 }
                 case "q", "й" -> {
                     System.exit(0);
