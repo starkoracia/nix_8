@@ -1,25 +1,20 @@
-package com.example.demofx;
+package com.example;
 
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.stage.Stage;
 
-public class KnightsMoveStarter {
-
+public class JavaFxStarter {
     private static volatile boolean javaFxLaunched = false;
 
-    public static void main(String[] args) {
-        myLaunch(KnightsMoveApplication.class);
-    }
-
-    public static void myLaunch(Class<? extends Application> applicationClass) {
-        if (!javaFxLaunched) { // First time
+    public static void fxStart(Class<? extends Application> applicationClass) {
+        if (!javaFxLaunched) {
             Platform.setImplicitExit(false);
             new Thread(() ->
                     Application.launch(applicationClass)
             ).start();
             javaFxLaunched = true;
-        } else { // Next times
+        } else {
             Platform.runLater(() -> {
                 try {
                     Application application = applicationClass.getConstructor().newInstance();

@@ -1,4 +1,4 @@
-package com.example.demofx.figure;
+package com.example.fxapps.knightmove.figure;
 
 public class KnightBlack implements Figure {
 

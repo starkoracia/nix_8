@@ -1,12 +1,10 @@
-package com.example.demofx;
+package com.example.fxapps.knightmove;
 
-import com.example.demofx.figure.Cell;
-import com.example.demofx.figure.Figure;
-import com.example.demofx.figure.ImpossibleMoveException;
-import com.example.demofx.figure.KnightBlack;
+import com.example.fxapps.knightmove.figure.Cell;
+import com.example.fxapps.knightmove.figure.Figure;
+import com.example.fxapps.knightmove.figure.ImpossibleMoveException;
+import com.example.fxapps.knightmove.figure.KnightBlack;
 import javafx.application.Application;
-import javafx.application.Platform;
-import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Group;
@@ -23,10 +21,11 @@ import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
-import javafx.stage.WindowEvent;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
 import java.util.stream.Collectors;
 
 public class KnightsMoveApplication extends Application {
@@ -46,8 +45,7 @@ public class KnightsMoveApplication extends Application {
     @Override
     public void start(Stage stage) throws IOException {
 
-        FXMLLoader fxmlLoader = new FXMLLoader(KnightsMoveApplication.class.getResource("hello-view.fxml"));
-        BorderPane root = fxmlLoader.load();
+        BorderPane root = new BorderPane();
 
         Group board = buildGrid(size);
 
@@ -222,7 +220,6 @@ public class KnightsMoveApplication extends Application {
         rectKnight.setOnMouseReleased(
                 event -> {
                     try {
-
                         int eventX = event.getX() > 580 ? 580 : (int) (event.getX() < 15 ? 15 : event.getX());
                         int eventY = event.getY() > 580 ? 580 : (int) (event.getY() < 15 ? 15 : event.getY());
                         eventCell = findBy(eventX, eventY);
@@ -233,8 +230,6 @@ public class KnightsMoveApplication extends Application {
                         } else {
                             throw new ImpossibleMoveException(String.format("Ход на кледку %s невозможен", eventCell));
                         }
-
-
                     } catch (Exception e) {
                         Alert info = new Alert(Alert.AlertType.INFORMATION);
                         info.setHeaderText(null);
@@ -301,7 +296,6 @@ public class KnightsMoveApplication extends Application {
                 possibleMoves.add(Cell.findBy(xRightRight, yDown));
             }
         }
-
         if (isWithinBoard(xLeftLeft)) {
             if (isWithinBoard(yUp)) {
                 possibleMoves.add(Cell.findBy(xLeftLeft, yUp));
@@ -310,7 +304,6 @@ public class KnightsMoveApplication extends Application {
                 possibleMoves.add(Cell.findBy(xLeftLeft, yDown));
             }
         }
-
         if (isWithinBoard(yUpUp)) {
             if (isWithinBoard(xLeft)) {
                 possibleMoves.add(Cell.findBy(xLeft, yUpUp));
@@ -319,7 +312,6 @@ public class KnightsMoveApplication extends Application {
                 possibleMoves.add(Cell.findBy(xRight, yUpUp));
             }
         }
-
         if (isWithinBoard(yDownDown)) {
             if (isWithinBoard(xLeft)) {
                 possibleMoves.add(Cell.findBy(xLeft, yDownDown));
@@ -328,7 +320,6 @@ public class KnightsMoveApplication extends Application {
                 possibleMoves.add(Cell.findBy(xRight, yDownDown));
             }
         }
-
         return possibleMoves;
     }
 

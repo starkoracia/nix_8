@@ -11,9 +11,9 @@
     </parent>
 
     <groupId>com.example</groupId>
-    <artifactId>demoFX</artifactId>
+    <artifactId>fxapps</artifactId>
     <version>1.0-SNAPSHOT</version>
-    <name>demoFX</name>
+    <name>fxapps</name>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -116,7 +116,7 @@
                             <transformers>
                                 <transformer
                                         implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-                                    <mainClass>com.example.demofx.KnightsMoveStarter</mainClass>
+                                    <mainClass>com.example.fxapps.knightmove.KnightsMoveStarter</mainClass>
                                     <manifestEntries>
 
                                     </manifestEntries>
@@ -141,7 +141,7 @@
                         <!-- Default configuration for running with: mvn clean javafx:run -->
                         <id>default-cli</id>
                         <configuration>
-                            <mainClass>com.example.demofx/com.example.demofx.KnightsMoveApplication</mainClass>
+                            <mainClass>com.example.fxapps/com.example.fxapps.knightmove.KnightsMoveApplication</mainClass>
                         </configuration>
                     </execution>
                 </executions>

@@ -1,4 +1,4 @@
-module com.example.demofx {
+module com.example.fxapps {
     requires javafx.controls;
     requires javafx.fxml;
     requires javafx.web;
@@ -9,6 +9,7 @@ module com.example.demofx {
     requires org.kordamp.bootstrapfx.core;
     requires eu.hansolo.tilesfx;
 
-    opens com.example.demofx to javafx.fxml;
-    exports com.example.demofx;
+    opens com.example.fxapps.knightmove to javafx.fxml;
+    exports com.example.fxapps.knightmove;
+    exports com.example.fxapps.gameoflife;
 }

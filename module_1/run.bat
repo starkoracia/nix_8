@@ -1,1 +1,1 @@
-call clear && java -jar ./target/module_1.jar
+java -jar ./target/module_1.jar

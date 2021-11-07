@@ -3,6 +3,7 @@ package ua.com.alevel;
 import lombok.Cleanup;
 import ua.com.alevel.binarytree.BinaryTreeController;
 import ua.com.alevel.brackets.BracketsController;
+import ua.com.alevel.gameoflive.GameOfLifeController;
 import ua.com.alevel.interfaces.controllers.ConsoleController;
 import ua.com.alevel.interfaces.starter.Starter;
 import ua.com.alevel.knightmove.KnightMoveController;
@@ -46,7 +47,7 @@ public class AppStarter implements Starter {
                     processingModuleApp(reader, new UniqueSymbolsController());
                 }
                 case "2" -> {
-                    processingModuleApp(reader, new KnightMoveController());
+                    new KnightMoveController().start(reader);
                 }
                 case "3" -> {
                     processingModuleApp(reader, new TriangleAreaController());
@@ -56,6 +57,9 @@ public class AppStarter implements Starter {
                 }
                 case "5" -> {
                      new BinaryTreeController().start(reader);
+                }
+                case "6" -> {
+                    new GameOfLifeController().start(reader);
                 }
                 case "q", "й" -> {
                     System.exit(0);
