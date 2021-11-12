@@ -26,13 +26,24 @@ public class MessagesController implements ConsoleController {
     }
 
     public void addMessage(BufferedReader reader) throws IOException {
+        StorageOfState storageOfState = StorageOfState.getInstance();
         this.reader = reader;
-        if (StorageOfState.getInstance().getAuthUser() == null) {
+        if (storageOfState.getAuthUser() == null) {
             login(reader);
         }
-        if (StorageOfState.getInstance().getAuthUser() != null) {
+        if (storageOfState.getAuthUser() != null && storageOfState.getCurrentChannel() == null) {
+            connectToChannel(reader);
+        }
+        if (storageOfState.getCurrentChannel() != null &&
+                storageOfState.getAuthUser() != null) {
             createMessage();
         }
+    }
+
+    private void connectToChannel(BufferedReader reader) {
+        this.reader = reader;
+        clearScreen();
+
     }
 
     public void login(BufferedReader reader) throws IOException {
@@ -52,7 +63,7 @@ public class MessagesController implements ConsoleController {
         System.out.print(" Введите пароль:\n -> ");
         String password = this.reader.readLine();
 
-        if(isPasswordNotValid(userFromDB, password)) {
+        if (isPasswordNotValid(userFromDB, password)) {
             System.out.println("\n Пароль не верный");
             enterToContinue();
             return;

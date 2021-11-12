@@ -9,6 +9,7 @@ import ua.com.alevel.utils.simplearray.impl.SimpleList;
 import java.nio.file.attribute.UserPrincipalNotFoundException;
 
 public class MessageServiceImpl implements MessageService {
+
     private static MessageServiceImpl instance;
     private final MessageDaoImpl messageDao;
 

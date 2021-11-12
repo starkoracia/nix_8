@@ -1,8 +1,7 @@
 package ua.com.alevel.utils;
 
+import ua.com.alevel.entity.Channel;
 import ua.com.alevel.entity.User;
-
-import java.nio.channels.Channel;
 
 public class StorageOfState {
     private static StorageOfState instance;

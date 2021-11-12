@@ -1,7 +1,5 @@
 package ua.com.alevel.binarytree;
 
-import ua.com.alevel.AppStarter;
-import ua.com.alevel.binarytree.intefaces.RunnableVoidMethod;
 import ua.com.alevel.binarytree.tree.Tree;
 import ua.com.alevel.binarytree.util.TreePrinter;
 import ua.com.alevel.interfaces.controllers.ConsoleController;

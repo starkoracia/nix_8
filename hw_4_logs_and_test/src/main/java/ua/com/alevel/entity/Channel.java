@@ -9,7 +9,21 @@ import ua.com.alevel.utils.simplearray.impl.SimpleList;
 @EqualsAndHashCode(callSuper = true)
 @Data
 @AllArgsConstructor
-@NoArgsConstructor
 public class Channel extends EntityBase {
-    SimpleList<User> members;
+    private String channelName;
+    private SimpleList<User> members;
+
+    public Channel(String channelName) {
+        this.channelName = channelName;
+        members = new SimpleList<>();
+    }
+
+    public boolean contain(User authUser) {
+        for (User member : members) {
+            if (member.equals(authUser)) {
+                return true;
+            }
+        }
+        return false;
+    }
 }
