@@ -2,21 +2,21 @@ package ua.com.alevel.utils.simplearray.impl;
 
 import java.util.Iterator;
 
-public class ArrayIterator<E> implements Iterator<E> {
-    private E[] values;
+public class SimpleListIterator<E> implements Iterator<E> {
+    private SimpleList<E> values;
     private int index = 0;
 
-    public ArrayIterator(E[] values) {
+    public SimpleListIterator(SimpleList<E> values) {
         this.values = values;
     }
 
     @Override
     public boolean hasNext() {
-        return index < values.length;
+        return index < values.size();
     }
 
     @Override
     public E next() {
-        return values[index++];
+        return values.get(index++);
     }
 }

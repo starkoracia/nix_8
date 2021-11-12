@@ -6,6 +6,7 @@ import ua.com.alevel.service.impl.MessageServiceImpl;
 import ua.com.alevel.service.impl.UserServiceImpl;
 import ua.com.alevel.utils.ConsoleHelperUtil;
 import ua.com.alevel.utils.DBHelperUtil;
+import ua.com.alevel.utils.StorageOfState;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -27,10 +28,10 @@ public class MessagesController implements ConsoleController {
 
     public void addMessage(BufferedReader reader) throws IOException {
         this.reader = reader;
-        if (DBHelperUtil.getAuthUser() == null) {
+        if (StorageOfState.getInstance().getAuthUser() == null) {
             login(reader);
         }
-        if (DBHelperUtil.getAuthUser() != null) {
+        if (StorageOfState.getInstance().getAuthUser() != null) {
             createMessage();
         }
     }
@@ -58,7 +59,7 @@ public class MessagesController implements ConsoleController {
             return;
         }
 
-        DBHelperUtil.setAuthUser(userFromDB);
+        StorageOfState.getInstance().setAuthUser(userFromDB);
         System.out.printf("Вы вошли как \"%s\"", userFromDB.getName());
         enterToContinue();
         clearScreen();
@@ -94,7 +95,7 @@ public class MessagesController implements ConsoleController {
         System.out.print(" Оставьте комментарий:\n -> ");
         message = reader.readLine();
 
-        User user = DBHelperUtil.getAuthUser();
+        User user = StorageOfState.getInstance().getAuthUser();
         messageService.create(new Message(message, user));
 
         enterToContinue();

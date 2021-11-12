@@ -1,7 +1,6 @@
 package ua.com.alevel.utils;
 
 import ua.com.alevel.entity.EntityBase;
-import ua.com.alevel.entity.User;
 import ua.com.alevel.utils.simplearray.impl.SimpleList;
 
 import java.util.UUID;
