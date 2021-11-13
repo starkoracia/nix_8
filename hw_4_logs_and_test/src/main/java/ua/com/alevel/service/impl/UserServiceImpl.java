@@ -1,6 +1,7 @@
 package ua.com.alevel.service.impl;
 
 import ua.com.alevel.dao.impl.UserDaoImpl;
+import ua.com.alevel.entity.Message;
 import ua.com.alevel.entity.User;
 import ua.com.alevel.service.UserService;
 import ua.com.alevel.utils.simplearray.impl.SimpleList;
@@ -45,6 +46,11 @@ public class UserServiceImpl implements UserService {
     @Override
     public void delete(User user) throws UserPrincipalNotFoundException {
         userDao.delete(user);
+        MessageServiceImpl messageService = MessageServiceImpl.getInstance();
+        SimpleList<Message> messages = messageService.findByAuthor(user);
+        for (Message message : messages) {
+            messageService.delete(message);
+        }
     }
 
     @Override
@@ -56,4 +62,5 @@ public class UserServiceImpl implements UserService {
     public User findByEmail(String email) throws UserPrincipalNotFoundException {
         return userDao.findByEmail(email);
     }
+
 }

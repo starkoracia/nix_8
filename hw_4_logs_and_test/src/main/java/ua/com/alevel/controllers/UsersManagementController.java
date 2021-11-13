@@ -1,6 +1,7 @@
 package ua.com.alevel.controllers;
 
 import ua.com.alevel.entity.User;
+import ua.com.alevel.service.UserService;
 import ua.com.alevel.service.impl.UserServiceImpl;
 import ua.com.alevel.utils.ConsoleHelperUtil;
 
@@ -12,7 +13,7 @@ import static ua.com.alevel.AppStarter.clearScreen;
 
 public class UsersManagementController implements ConsoleController {
 
-    private UserServiceImpl userService = UserServiceImpl.getInstance();
+    private UserService userService = UserServiceImpl.getInstance();
     private BufferedReader reader;
 
     @Override
@@ -226,7 +227,10 @@ public class UsersManagementController implements ConsoleController {
         String password = reader.readLine();
         System.out.print(" Укажите имя пользователя:\n -> ");
         String name = reader.readLine();
-        userService.create(new User(email, password, name));
+        User user = new User(email, password, name);
+        userService.create(user);
+        System.out.printf("\n Пользователь: \"%s\" успешно создан!\n", user.getName());
+        enterToContinue();
 
         clearScreen();
     }
@@ -235,8 +239,6 @@ public class UsersManagementController implements ConsoleController {
         User userByEmail;
         try {
             userByEmail = userService.findByEmail(email);
-            System.out.println("\n Пользователь с таким email существует");
-            enterToContinue();
         } catch (UserPrincipalNotFoundException e) {
             return false;
         }

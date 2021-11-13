@@ -12,4 +12,5 @@ import lombok.NoArgsConstructor;
 public class Message extends EntityBase {
     private String text;
     private User author;
+    private Channel channel;
 }

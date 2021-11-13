@@ -1,6 +1,7 @@
 package ua.com.alevel.db.impl;
 
 import ua.com.alevel.db.MessageDB;
+import ua.com.alevel.entity.Channel;
 import ua.com.alevel.entity.Message;
 import ua.com.alevel.entity.User;
 import ua.com.alevel.utils.DBHelperUtil;
@@ -76,4 +77,19 @@ public class MessageDBImpl implements MessageDB {
         }
         return messageList;
     }
+
+    @Override
+    public SimpleList<Message> findByChannel(Channel channel) throws UserPrincipalNotFoundException {
+        SimpleList<Message> messageList = new SimpleList<>();
+        for (Message message : messages) {
+            if (message.getChannel().equals(channel)) {
+                messageList.add(message);
+            }
+        }
+        if(messageList.size() == 0) {
+            throw new UserPrincipalNotFoundException("Ошибка поиска. Комментариев этого автора не существует");
+        }
+        return messageList;
+    }
+
 }

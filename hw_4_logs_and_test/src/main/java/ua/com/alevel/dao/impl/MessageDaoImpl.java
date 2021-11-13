@@ -2,6 +2,7 @@ package ua.com.alevel.dao.impl;
 
 import ua.com.alevel.dao.MessageDao;
 import ua.com.alevel.db.impl.MessageDBImpl;
+import ua.com.alevel.entity.Channel;
 import ua.com.alevel.entity.Message;
 import ua.com.alevel.entity.User;
 import ua.com.alevel.utils.simplearray.impl.SimpleList;
@@ -42,6 +43,11 @@ public class MessageDaoImpl implements MessageDao {
     @Override
     public SimpleList<Message> findByAuthor(User author) throws UserPrincipalNotFoundException {
         return db.findByAuthor(author);
+    }
+
+    @Override
+    public SimpleList<Message> findByChannel(Channel channel) throws UserPrincipalNotFoundException {
+        return db.findByChannel(channel);
     }
 
     @Override

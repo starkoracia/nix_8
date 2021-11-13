@@ -48,4 +48,8 @@ public class ChannelDaoImpl implements ChannelDao {
         return db.findAll();
     }
 
+    @Override
+    public Channel findByName(String channelName) throws UserPrincipalNotFoundException {
+        return db.findByName(channelName);
+    }
 }

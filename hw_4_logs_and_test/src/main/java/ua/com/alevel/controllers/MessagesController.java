@@ -1,11 +1,14 @@
 package ua.com.alevel.controllers;
 
+import ua.com.alevel.entity.Channel;
 import ua.com.alevel.entity.Message;
 import ua.com.alevel.entity.User;
+import ua.com.alevel.service.impl.ChannelServiceImpl;
 import ua.com.alevel.service.impl.MessageServiceImpl;
 import ua.com.alevel.service.impl.UserServiceImpl;
 import ua.com.alevel.utils.ConsoleHelperUtil;
-import ua.com.alevel.utils.StorageOfState;
+import ua.com.alevel.utils.StateStorage;
+import ua.com.alevel.utils.simplearray.impl.SimpleList;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -19,35 +22,60 @@ public class MessagesController implements ConsoleController {
     private BufferedReader reader;
     private UserServiceImpl userService = UserServiceImpl.getInstance();
 
-    @Override
-    public void start(BufferedReader reader) throws IOException {
+    public MessagesController(BufferedReader reader) {
         this.reader = reader;
-        showMessages();
     }
 
-    public void addMessage(BufferedReader reader) throws IOException {
-        StorageOfState storageOfState = StorageOfState.getInstance();
-        this.reader = reader;
-        if (storageOfState.getAuthUser() == null) {
-            login(reader);
+    @Override
+    public void start(BufferedReader reader) throws IOException {
+        showMessages(messageService.findAll());
+    }
+
+    public void addMessage() throws IOException {
+        StateStorage stateStorage = StateStorage.getInstance();
+        if (stateStorage.getAuthUser() == null) {
+            login();
         }
-        if (storageOfState.getAuthUser() != null && storageOfState.getCurrentChannel() == null) {
-            connectToChannel(reader);
+        if (stateStorage.getAuthUser() != null && stateStorage.getCurrentChannel() == null) {
+            connectToChannel();
         }
-        if (storageOfState.getCurrentChannel() != null &&
-                storageOfState.getAuthUser() != null) {
+        if (stateStorage.getCurrentChannel() != null &&
+                stateStorage.getAuthUser() != null) {
             createMessage();
         }
     }
 
-    private void connectToChannel(BufferedReader reader) {
-        this.reader = reader;
+    public void connectToChannel() throws IOException {
         clearScreen();
 
+        String channelName;
+
+        System.out.print("\n  ** Выбор канала **\n\n Укажите имя канала:\n -> ");
+        channelName = this.reader.readLine();
+        if (!ChannelServiceImpl.getInstance().isChannelExist(channelName) || channelName.equals("")) {
+            System.out.println("\n Канала с таким именем не существует");
+            enterToContinue();
+            return;
+        }
+        Channel channelFromDB = getChannelFromDB(channelName);
+
+        StateStorage.getInstance().setChannel(channelFromDB);
+        System.out.printf("Вы вошли в канал \"%s\"", channelFromDB.getChannelName());
+        enterToContinue();
+        clearScreen();
     }
 
-    public void login(BufferedReader reader) throws IOException {
-        this.reader = reader;
+    private Channel getChannelFromDB(String channelName) throws IOException {
+        Channel channel;
+        try {
+            channel = ChannelServiceImpl.getInstance().findByName(channelName);
+        } catch (UserPrincipalNotFoundException e) {
+            return null;
+        }
+        return channel;
+    }
+
+    public void login() throws IOException {
         clearScreen();
         String email;
 
@@ -69,7 +97,7 @@ public class MessagesController implements ConsoleController {
             return;
         }
 
-        StorageOfState.getInstance().setAuthUser(userFromDB);
+        StateStorage.getInstance().setAuthUser(userFromDB);
         System.out.printf("Вы вошли как \"%s\"", userFromDB.getName());
         enterToContinue();
         clearScreen();
@@ -105,24 +133,52 @@ public class MessagesController implements ConsoleController {
         System.out.print(" Оставьте комментарий:\n -> ");
         message = reader.readLine();
 
-        User user = StorageOfState.getInstance().getAuthUser();
-        messageService.create(new Message(message, user));
+        User user = StateStorage.getInstance().getAuthUser();
+        Channel channel = StateStorage.getInstance().getCurrentChannel();
+        messageService.create(new Message(message, user, channel));
 
         enterToContinue();
         clearScreen();
     }
 
-    private void showMessages() throws IOException {
+    private void showMessages(SimpleList<Message> messages) throws IOException {
         clearScreen();
-        String usersTableString = ConsoleHelperUtil.createMessagesTableString(messageService.findAll());
-        System.out.println(usersTableString);
+        String messagesTableString = ConsoleHelperUtil.createMessagesTableString(messages);
+        System.out.println(messagesTableString);
         enterToContinue();
+    }
+
+    public void showMessagesByChannel() throws IOException {
+        if (StateStorage.getInstance().getCurrentChannel() == null) {
+            connectToChannel();
+        }
+        if (StateStorage.getInstance().getCurrentChannel() != null) {
+            try {
+                showMessages(messageService.findByChannel(StateStorage.getInstance().getCurrentChannel()));
+            } catch (UserPrincipalNotFoundException e) {
+                System.out.println(e.getName());
+                enterToContinue();
+            }
+        }
+    }
+
+    public void showMessagesByAuthor() throws IOException {
+        if (StateStorage.getInstance().getAuthUser() == null) {
+            login();
+        }
+        if (StateStorage.getInstance().getAuthUser() != null) {
+            try {
+                showMessages(messageService.findByAuthor(StateStorage.getInstance().getAuthUser()));
+            } catch (UserPrincipalNotFoundException e) {
+                System.out.println(e.getName());
+                enterToContinue();
+            }
+        }
     }
 
     private void enterToContinue() throws IOException {
         System.out.println("\n Нажмите enter для продолжения");
         reader.readLine();
     }
-
 
 }

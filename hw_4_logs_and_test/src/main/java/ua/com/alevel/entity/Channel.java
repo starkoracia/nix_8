@@ -26,4 +26,5 @@ public class Channel extends EntityBase {
         }
         return false;
     }
+
 }

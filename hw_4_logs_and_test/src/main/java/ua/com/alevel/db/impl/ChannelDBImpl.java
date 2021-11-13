@@ -2,6 +2,7 @@ package ua.com.alevel.db.impl;
 
 import ua.com.alevel.db.ChannelDB;
 import ua.com.alevel.entity.Channel;
+import ua.com.alevel.entity.User;
 import ua.com.alevel.utils.DBHelperUtil;
 import ua.com.alevel.utils.simplearray.impl.SimpleList;
 
@@ -55,6 +56,16 @@ public class ChannelDBImpl implements ChannelDB {
             }
         }
         throw new UserPrincipalNotFoundException("Ошибка поиска. Канал с таким ID не существует");
+    }
+
+    @Override
+    public Channel findByName(String channelName) throws UserPrincipalNotFoundException {
+        for (Channel channel : channels) {
+            if (channel.getChannelName().equals(channelName)) {
+                return channel;
+            }
+        }
+        throw new UserPrincipalNotFoundException("Ошибка поиска. Канал с таким Именем не существует");
     }
 
     @Override

@@ -1,13 +1,18 @@
 package ua.com.alevel;
 
 import lombok.Cleanup;
+import ua.com.alevel.controllers.ChannelController;
 import ua.com.alevel.controllers.MessagesController;
 import ua.com.alevel.controllers.UsersManagementController;
+import ua.com.alevel.entity.Channel;
 import ua.com.alevel.entity.Message;
 import ua.com.alevel.entity.User;
 import ua.com.alevel.interfaces.starter.Starter;
+import ua.com.alevel.service.impl.ChannelServiceImpl;
 import ua.com.alevel.service.impl.MessageServiceImpl;
 import ua.com.alevel.service.impl.UserServiceImpl;
+import ua.com.alevel.utils.StateStorage;
+import ua.com.alevel.utils.simplearray.impl.SimpleList;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
@@ -33,13 +38,20 @@ public class AppStarter implements Starter {
 
     private static void createTestUsersAndMessages() throws UserPrincipalNotFoundException {
         UserServiceImpl userService = UserServiceImpl.getInstance();
-        userService.create(new User("admin@admin","admin","admin"));
-        userService.create(new User("111","111","111"));
-        userService.create(new User("222","222","222"));
-        userService.create(new User("333","333","333"));
+        userService.create(new User("admin@admin", "admin", "admin"));
+        userService.create(new User("111", "111", "111"));
+        userService.create(new User("222", "222", "222"));
+        userService.create(new User("333", "333", "333"));
+
+        ChannelServiceImpl channelService = ChannelServiceImpl.getInstance();
+        Channel channel = new Channel("Admins");
+        channelService.create(channel);
 
         MessageServiceImpl messageService = MessageServiceImpl.getInstance();
-        messageService.create(new Message("Hi, is firt test comment", userService.findByEmail("admin@admin")));
+        messageService.create(
+                new Message("Hi, is firt test comment",
+                        userService.findByEmail("admin@admin"),
+                        channelService.findByName("Admins")));
     }
 
     @Override
@@ -50,7 +62,7 @@ public class AppStarter implements Starter {
     }
 
     private static void mainLoopRun(BufferedReader reader) throws IOException {
-        MessagesController messagesController = new MessagesController();
+        MessagesController messagesController = new MessagesController(reader);
         while (true) {
             printChooseApp();
 
@@ -60,13 +72,25 @@ public class AppStarter implements Starter {
                     messagesController.start(reader);
                 }
                 case "2" -> {
-                    messagesController.addMessage(reader);
+                    messagesController.addMessage();
                 }
                 case "3" -> {
-                    new UsersManagementController().start(reader);
+                    new ChannelController().start(reader);
                 }
                 case "4" -> {
-                    messagesController.login(reader);
+                    new UsersManagementController().start(reader);
+                }
+                case "5" -> {
+                    messagesController.login();
+                }
+                case "6" -> {
+                    messagesController.connectToChannel();
+                }
+                case "7" -> {
+                    messagesController.showMessagesByAuthor();
+                }
+                case "8" -> {
+                    messagesController.showMessagesByChannel();
                 }
                 case "q", "й" -> {
                     System.exit(0);
@@ -96,17 +120,33 @@ public class AppStarter implements Starter {
         System.out.print("""
                         
                         ** Залогиньтесь и оставьте свой комментарий **
-                      
+                        
+                """);
+        if (StateStorage.getInstance().getAuthUser() != null) {
+            System.out.printf("Вы вошли как: %s\n", StateStorage.getInstance().getAuthUser().getName());
+        }
+        if (StateStorage.getInstance().getCurrentChannel() != null) {
+            System.out.printf("Вы находитесь в канале: %s\n", StateStorage.getInstance().getCurrentChannel().getChannelName());
+        }
+        System.out.print("""
+                 
                  1) Просмотр всех коментариев.
                         
                  2) Оставить комментарий "".
                                    
-                 3) Управление пользователями.
+                 3) Управление каналами.
                  
-                 4) Залогиниться
+                 4) Управление пользователями.
+                 
+                 5) Залогиниться.
                   
+                 6) Войти в канал. 
+                 
+                 7) Комментарии по автору.
+                 
+                 8) Комментарии по каналу.
                                  
-                Введите номер пункта меню "1-3",
+                Введите номер пункта меню "1-8",
                 Для выхода введите "q"
                 ->\040""");
     }
@@ -121,4 +161,5 @@ public class AppStarter implements Starter {
         } catch (IOException | InterruptedException ignored) {
         }
     }
+
 }

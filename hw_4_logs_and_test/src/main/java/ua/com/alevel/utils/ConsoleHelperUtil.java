@@ -3,6 +3,7 @@ package ua.com.alevel.utils;
 import de.vandermeer.asciitable.AsciiTable;
 import de.vandermeer.asciitable.CWC_LongestWord;
 import de.vandermeer.skb.interfaces.transformers.textformat.TextAlignment;
+import ua.com.alevel.entity.Channel;
 import ua.com.alevel.entity.Message;
 import ua.com.alevel.entity.User;
 import ua.com.alevel.utils.simplearray.impl.SimpleList;
@@ -11,8 +12,25 @@ public final class ConsoleHelperUtil {
     private ConsoleHelperUtil() {
     }
 
+    public static String createChannelsTableString(SimpleList<Channel> channels) {
+        String[] columnNames = {"№", "Name", "Number of comments"};
+        String[][] tableData = createChannelsTableData(channels, columnNames);
+
+        return getString(tableData);
+    }
+
+    private static String[][] createChannelsTableData(SimpleList<Channel> channels, String ...columnNames) {
+        String[][] data = new String[channels.size() + 1][];
+        data[0] = columnNames;
+        for (int i = 1; i < data.length; i++) {
+            data[i] = new String[]
+                    {String.format("%d", i),channels.get(i - 1).getChannelName(), "?"};
+        }
+        return data;
+    }
+
     public static String createMessagesTableString(SimpleList<Message> messages) {
-        String[] columnNames = {"№", "Comment", "Author"};
+        String[] columnNames = {"№", "Comment", "Author", "Channel"};
         String[][] tableData = createMessagesTableData(messages, columnNames);
 
         return getString(tableData);
@@ -39,7 +57,7 @@ public final class ConsoleHelperUtil {
         data[0] = columnNames;
         for (int i = 1; i < data.length; i++) {
             data[i] = new String[]
-                    {String.format("%d", i),messages.get(i - 1).getText(), messages.get(i - 1).getAuthor().getName()};
+                    {String.format("%d", i),messages.get(i - 1).getText(), messages.get(i - 1).getAuthor().getName(), messages.get(i - 1).getChannel().getChannelName()};
         }
         return data;
     }
@@ -66,4 +84,5 @@ public final class ConsoleHelperUtil {
         users.add(user);
         return createUsersTableString(users);
     }
+
 }

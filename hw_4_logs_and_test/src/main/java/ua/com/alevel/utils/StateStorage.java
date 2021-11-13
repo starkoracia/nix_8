@@ -3,16 +3,16 @@ package ua.com.alevel.utils;
 import ua.com.alevel.entity.Channel;
 import ua.com.alevel.entity.User;
 
-public class StorageOfState {
-    private static StorageOfState instance;
+public class StateStorage {
+    private static StateStorage instance;
     private User authUser;
     private Channel channel;
 
-    private StorageOfState() { }
+    private StateStorage() { }
 
-    public static StorageOfState getInstance() {
+    public static StateStorage getInstance() {
         if(instance == null) {
-            instance = new StorageOfState();
+            instance = new StateStorage();
         }
         return instance;
     }
