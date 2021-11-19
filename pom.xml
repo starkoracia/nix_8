@@ -23,7 +23,36 @@
         <junit.junit.version>4.13.2</junit.junit.version>
         <slf4j.version>1.7.32</slf4j.version>
         <logback.version>1.2.6</logback.version>
+
+        <logs.main.folder>logs</logs.main.folder>
+        <logs.archived.folder>archived</logs.archived.folder>
+        <logs.local.folder>local</logs.local.folder>
+        <logs.prod.folder>prod</logs.prod.folder>
     </properties>
+
+    <profiles>
+        <profile>
+            <id>local</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <properties>
+                <logs.folder.path>${logs.main.folder}/${logs.local.folder}</logs.folder.path>
+                <logs.info.file.path>${logs.folder.path}/info.log</logs.info.file.path>
+                <logs.warn.file.path>${logs.folder.path}/warn.log</logs.warn.file.path>
+                <logs.error.file.path>${logs.folder.path}/error.log</logs.error.file.path>
+            </properties>
+        </profile>
+        <profile>
+            <id>prod</id>
+            <properties>
+                <logs.folder.path>${logs.main.folder}/${logs.prod.folder}</logs.folder.path>
+                <logs.info.file.path>${logs.folder.path}/info.log</logs.info.file.path>
+                <logs.warn.file.path>${logs.folder.path}/warn.log</logs.warn.file.path>
+                <logs.error.file.path>${logs.folder.path}/error.log</logs.error.file.path>
+            </properties>
+        </profile>
+    </profiles>
 
     <modules>
         <module>hw_1_base_operations</module>
@@ -35,6 +64,7 @@
         <module>module_1</module>
         <module>fxapps</module>
         <module>hw_4_logs_and_test</module>
+        <module>hw_5_collection</module>
     </modules>
 
 

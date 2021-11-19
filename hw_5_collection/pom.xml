@@ -9,11 +9,11 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>hw_4_logs_and_test</artifactId>
+    <artifactId>hw_5_collection</artifactId>
 
     <properties>
         <app.main.class>ua.com.alevel.LogsAndTestMain</app.main.class>
-        <app.moduleName>hw_4_logs_and_test</app.moduleName>
+        <app.moduleName>${artifactId}</app.moduleName>
     </properties>
 
     <build>
