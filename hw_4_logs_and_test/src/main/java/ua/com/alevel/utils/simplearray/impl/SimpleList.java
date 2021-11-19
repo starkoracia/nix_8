@@ -74,7 +74,7 @@ public class SimpleList<E> implements Simple<E> {
     }
 
     E[] asArray() {
-        return values;
+        return Arrays.copyOf(values, size);
     }
 
     @Override
