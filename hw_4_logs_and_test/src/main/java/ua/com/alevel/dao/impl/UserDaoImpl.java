@@ -24,7 +24,7 @@ public class UserDaoImpl implements UserDao {
     }
 
     @Override
-    public void create(User user) {
+    public void create(User user) throws UserPrincipalNotFoundException {
         db.create(user);
     }
 

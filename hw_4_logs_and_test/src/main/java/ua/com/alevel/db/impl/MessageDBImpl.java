@@ -26,9 +26,13 @@ public class MessageDBImpl implements MessageDB {
     }
 
     @Override
-    public void create(Message message) {
-        message.setId(DBHelperUtil.generateIdForEntity(messages));
-        messages.add(message);
+    public void create(Message message) throws UserPrincipalNotFoundException {
+        if(message != null) {
+            message.setId(DBHelperUtil.generateIdForEntity(messages));
+            messages.add(message);
+            return;
+        }
+        throw new UserPrincipalNotFoundException("Ошибка зоздания комента");
     }
 
     @Override

@@ -26,7 +26,7 @@ public class MessageDaoImpl implements MessageDao {
     }
 
     @Override
-    public void create(Message message) {
+    public void create(Message message) throws UserPrincipalNotFoundException {
         db.create(message);
     }
 

@@ -12,9 +12,39 @@
     <artifactId>hw_4_logs_and_test</artifactId>
 
     <properties>
-        <app.main.class>ua.com.alevel.</app.main.class>
+        <app.main.class>ua.com.alevel.LogsAndTestMain</app.main.class>
         <app.moduleName>hw_4_logs_and_test</app.moduleName>
+
+        <logs.main.folder>logs</logs.main.folder>
+        <logs.archived.folder>archived</logs.archived.folder>
+        <logs.local.folder>local</logs.local.folder>
+        <logs.prod.folder>prod</logs.prod.folder>
     </properties>
+
+    <profiles>
+        <profile>
+            <id>local</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <properties>
+                <logs.folder.path>${logs.main.folder}/${logs.local.folder}</logs.folder.path>
+                <logs.info.file.path>${logs.folder.path}/info.log</logs.info.file.path>
+                <logs.warn.file.path>${logs.folder.path}/warn.log</logs.warn.file.path>
+                <logs.error.file.path>${logs.folder.path}/error.log</logs.error.file.path>
+            </properties>
+        </profile>
+        <profile>
+            <id>prod</id>
+            <properties>
+                <logs.folder.path>${logs.main.folder}/${logs.prod.folder}</logs.folder.path>
+                <logs.info.file.path>${logs.folder.path}/info.log</logs.info.file.path>
+                <logs.warn.file.path>${logs.folder.path}/warn.log</logs.warn.file.path>
+                <logs.error.file.path>${logs.folder.path}/error.log</logs.error.file.path>
+            </properties>
+        </profile>
+    </profiles>
+
     <dependencies>
         <dependency>
             <groupId>org.reflections</groupId>
@@ -26,6 +56,12 @@
 
     <build>
         <finalName>${app.moduleName}.original</finalName>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+            </resource>
+        </resources>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>

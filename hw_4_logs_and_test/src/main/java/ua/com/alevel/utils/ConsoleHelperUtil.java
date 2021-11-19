@@ -6,25 +6,37 @@ import de.vandermeer.skb.interfaces.transformers.textformat.TextAlignment;
 import ua.com.alevel.entity.Channel;
 import ua.com.alevel.entity.Message;
 import ua.com.alevel.entity.User;
+import ua.com.alevel.service.impl.MessageServiceImpl;
 import ua.com.alevel.utils.simplearray.impl.SimpleList;
 
+import java.nio.file.attribute.UserPrincipalNotFoundException;
+
 public final class ConsoleHelperUtil {
-    private ConsoleHelperUtil() {
-    }
+
+    private ConsoleHelperUtil() { }
 
     public static String createChannelsTableString(SimpleList<Channel> channels) {
         String[] columnNames = {"№", "Name", "Number of comments"};
         String[][] tableData = createChannelsTableData(channels, columnNames);
-
         return getString(tableData);
     }
 
-    private static String[][] createChannelsTableData(SimpleList<Channel> channels, String ...columnNames) {
+    private static String[][] createChannelsTableData(SimpleList<Channel> channels, String... columnNames) {
+        MessageServiceImpl messageService = MessageServiceImpl.getInstance();
         String[][] data = new String[channels.size() + 1][];
         data[0] = columnNames;
         for (int i = 1; i < data.length; i++) {
+            Integer numberOfComments;
+            try {
+                numberOfComments = messageService.findByChannel(channels.get(i - 1)).size();
+            } catch (UserPrincipalNotFoundException e) {
+                numberOfComments = 0;
+            }
             data[i] = new String[]
-                    {String.format("%d", i),channels.get(i - 1).getChannelName(), "?"};
+                    {
+                            String.format("%d", i),
+                            channels.get(i - 1).getChannelName(),
+                            numberOfComments.toString()};
         }
         return data;
     }
@@ -52,12 +64,12 @@ public final class ConsoleHelperUtil {
         return at.render();
     }
 
-    private static String[][] createMessagesTableData(SimpleList<Message> messages, String ...columnNames) {
+    private static String[][] createMessagesTableData(SimpleList<Message> messages, String... columnNames) {
         String[][] data = new String[messages.size() + 1][];
         data[0] = columnNames;
         for (int i = 1; i < data.length; i++) {
             data[i] = new String[]
-                    {String.format("%d", i),messages.get(i - 1).getText(), messages.get(i - 1).getAuthor().getName(), messages.get(i - 1).getChannel().getChannelName()};
+                    {String.format("%d", i), messages.get(i - 1).getText(), messages.get(i - 1).getAuthor().getName(), messages.get(i - 1).getChannel().getChannelName()};
         }
         return data;
     }
@@ -69,12 +81,12 @@ public final class ConsoleHelperUtil {
         return getString(tableData);
     }
 
-    private static String[][] createUsersTableData(SimpleList<User> users, String ...columnNames) {
+    private static String[][] createUsersTableData(SimpleList<User> users, String... columnNames) {
         String[][] data = new String[users.size() + 1][];
         data[0] = columnNames;
         for (int i = 1; i < data.length; i++) {
             data[i] = new String[]
-                    {String.format("%d", i),users.get(i - 1).getEmail(), users.get(i - 1).getPassword(), users.get(i - 1).getName()};
+                    {String.format("%d", i), users.get(i - 1).getEmail(), users.get(i - 1).getPassword(), users.get(i - 1).getName()};
         }
         return data;
     }

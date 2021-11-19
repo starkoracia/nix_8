@@ -6,7 +6,7 @@ import ua.com.alevel.utils.simplearray.impl.SimpleList;
 import java.nio.file.attribute.UserPrincipalNotFoundException;
 
 public interface DBBase<E extends EntityBase> {
-    void create(E entity);
+    void create(E entity) throws UserPrincipalNotFoundException;
     void update(E entity) throws UserPrincipalNotFoundException;
     void delete(E entity) throws UserPrincipalNotFoundException;
     E findById(String id) throws UserPrincipalNotFoundException;

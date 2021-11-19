@@ -1,6 +1,8 @@
 package ua.com.alevel;
 
 import lombok.Cleanup;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import ua.com.alevel.controllers.ChannelController;
 import ua.com.alevel.controllers.MessagesController;
 import ua.com.alevel.controllers.UsersManagementController;
@@ -20,8 +22,12 @@ import java.nio.file.attribute.UserPrincipalNotFoundException;
 
 public class AppStarter implements Starter {
     private static InputStreamReader inputStreamReader;
+    private Logger infoLogger = LoggerFactory.getLogger("info");
+    private Logger errorLogger = LoggerFactory.getLogger("error");
 
-    private static void initialize() throws UnsupportedEncodingException, UserPrincipalNotFoundException {
+    private void initialize() throws UnsupportedEncodingException, UserPrincipalNotFoundException {
+        infoLogger.info("start application");
+        setShutdownHook();
         String charsetName;
         Console console = System.console();
         if (console != null && System.getProperty("os.name").contains("Windows")) {
@@ -36,7 +42,13 @@ public class AppStarter implements Starter {
         createTestUsersAndMessages();
     }
 
-    private static void createTestUsersAndMessages() throws UserPrincipalNotFoundException {
+    private void setShutdownHook() {
+        Runtime.getRuntime().
+                addShutdownHook(new Thread(() -> infoLogger.info("application shutdown"), "Shutdown-thread"));
+    }
+
+    private void createTestUsersAndMessages() throws UserPrincipalNotFoundException {
+        infoLogger.info("create test users and messages");
         UserServiceImpl userService = UserServiceImpl.getInstance();
         userService.create(new User("admin@admin", "admin", "admin"));
         userService.create(new User("111", "111", "111"));
@@ -44,14 +56,22 @@ public class AppStarter implements Starter {
         userService.create(new User("333", "333", "333"));
 
         ChannelServiceImpl channelService = ChannelServiceImpl.getInstance();
-        Channel channel = new Channel("Admins");
-        channelService.create(channel);
+        Channel channelOne = new Channel("ch1");
+        Channel channelTwo = new Channel("ch2");
+        channelService.create(channelOne);
+        channelService.create(channelTwo);
 
         MessageServiceImpl messageService = MessageServiceImpl.getInstance();
         messageService.create(
-                new Message("Hi, is firt test comment",
+                new Message(
+                        "Hi, is first test comment in ch1",
                         userService.findByEmail("admin@admin"),
-                        channelService.findByName("Admins")));
+                        channelService.findByName("ch1")));
+        messageService.create(
+                new Message(
+                        "Hi, is ch2",
+                        userService.findByEmail("admin@admin"),
+                        channelService.findByName("ch2")));
     }
 
     @Override
@@ -61,7 +81,7 @@ public class AppStarter implements Starter {
         mainLoopRun(reader);
     }
 
-    private static void mainLoopRun(BufferedReader reader) throws IOException {
+    private void mainLoopRun(BufferedReader reader) throws IOException {
         MessagesController messagesController = new MessagesController(reader);
         while (true) {
             printChooseApp();

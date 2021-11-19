@@ -53,7 +53,7 @@ public class SimpleList<E> implements Simple<E> {
     @Override
     public boolean delete(int index) {
         E[] temp = (E[]) new Object[values.length];
-        System.arraycopy(values, index + 1, values, index, size - index);
+        System.arraycopy(values, index + 1, values, index, size - index - 1);
         size--;
         return true;
     }
