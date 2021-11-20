@@ -1,7 +1,5 @@
 package ua.com.alevel.util;
 
-import java.lang.Number;
-import java.util.Arrays;
 import java.util.Iterator;
 
 public class MathSet implements SimpleSet<Number> {
@@ -9,26 +7,6 @@ public class MathSet implements SimpleSet<Number> {
     private Number[] values;
     private int size;
     private int capacity = 10;
-
-    public static void main(String[] args) {
-        MathSet mathSet = new MathSet();
-        System.out.println("mathSet = " + mathSet);
-        Number[] numbers = new Number[]{1, 2.0, 3.0f, 1, 1};
-        Number[] numbers2 = new Number[]{2, 3.0, 4.0f, 2, 2};
-
-        mathSet = new MathSet(numbers, numbers2);
-        System.out.println("mathSet = " + mathSet);
-
-        MathSet mathSet2 = new MathSet(mathSet);
-        System.out.println("mathSet2 = " + mathSet2);
-
-        mathSet2.add(0.4);
-        mathSet2.add(1.5);
-        mathSet2.delete(2);
-
-        MathSet mathSet3 = new MathSet(mathSet2, mathSet );
-        System.out.println("mathSet3 = " + mathSet3);
-    }
 
     public MathSet() {
         this.values = new Number[capacity];
@@ -46,7 +24,7 @@ public class MathSet implements SimpleSet<Number> {
         }
     }
 
-    public MathSet(Number[] ... numbers) {
+    public MathSet(Number[]... numbers) {
         int initCap = 0;
         for (int i = 0; i < numbers.length; i++) {
             initCap += numbers[i].length;
@@ -67,11 +45,8 @@ public class MathSet implements SimpleSet<Number> {
         }
     }
 
-    public MathSet(MathSet ... numbers) {
-        int initCap = 0;
-        for (int i = 0; i < numbers.length; i++) {
-            initCap += numbers[i].size();
-        }
+    public MathSet(MathSet... numbers) {
+        int initCap = getInitCapValue(numbers);
         initCapacity(initCap);
         for (int i = 0; i < numbers.length; i++) {
             MathSet tempMathSet = numbers[i];
@@ -79,6 +54,14 @@ public class MathSet implements SimpleSet<Number> {
                 add(tempMathSet.get(j));
             }
         }
+    }
+
+    private int getInitCapValue(MathSet... numbers) {
+        int initCap = 0;
+        for (int i = 0; i < numbers.length; i++) {
+            initCap += numbers[i].size();
+        }
+        return initCap;
     }
 
     private void initCapacity(int initCap) {
@@ -98,6 +81,140 @@ public class MathSet implements SimpleSet<Number> {
             return true;
         }
         return false;
+    }
+
+    public boolean add(Number... number) {
+        for (int i = 0; i < number.length; i++) {
+            add(number[i]);
+        }
+        return true;
+    }
+
+    public void join(MathSet mathSet) {
+        for (int i = 0; i < mathSet.size(); i++) {
+            add(mathSet.get(i));
+        }
+    }
+
+    public void join(MathSet... mathSet) {
+        for (int i = 0; i < mathSet.length; i++) {
+            join(mathSet[i]);
+        }
+    }
+
+    public void intersection(MathSet mathSet) {
+        Number[] tempNumbers = copyOf(values, size);
+        clear();
+        for (int i = 0; i < tempNumbers.length; i++) {
+            Number tempNumber = tempNumbers[i];
+            for (int j = 0; j < mathSet.size(); j++) {
+                Number number = mathSet.get(j);
+                if (tempNumber.equals(number)) {
+                    add(number);
+                }
+            }
+        }
+    }
+
+    public void intersection(MathSet... mathSet) {
+        for (int i = 0; i < mathSet.length; i++) {
+            intersection(mathSet[i]);
+        }
+    }
+
+    public void sortAsc() {
+        CollectionUtil.mergeSort(values, 0, size - 1, true);
+    }
+
+    public void sortAsc(int firstIndex, int lastIndex) {
+        if (firstIndex < 0 || firstIndex >= size || lastIndex < 0 || lastIndex >= size) {
+            throw new ArrayIndexOutOfBoundsException(String.format("firstIndex = %d, lastIndex = %d, size = %d", firstIndex, lastIndex, size));
+        }
+        CollectionUtil.mergeSort(values, firstIndex, lastIndex, true);
+    }
+
+    public void sortAsc(Number value) {
+        CollectionUtil.mergeSort(values, findIndex(value), size - 1, true);
+    }
+
+    public void sortDesc() {
+        CollectionUtil.mergeSort(values, 0, size - 1, false);
+    }
+
+    public void sortDesc(int firstIndex, int lastIndex) {
+        if (firstIndex < 0 || firstIndex >= size || lastIndex < 0 || lastIndex >= size) {
+            throw new ArrayIndexOutOfBoundsException(String.format("firstIndex = %d, lastIndex = %d, size = %d", firstIndex, lastIndex, size));
+        }
+        CollectionUtil.mergeSort(values, firstIndex, lastIndex, false);
+    }
+
+    public void sortDesc(Number value) {
+        CollectionUtil.mergeSort(values, findIndex(value), size - 1, false);
+    }
+
+    private int findIndex(Number number) {
+        for (int i = 0; i < size; i++) {
+            if (values[i].equals(number)) {
+                return i;
+            }
+        }
+        return size - 1;
+    }
+
+    public Number getMax() {
+        if (size == 0) {
+            return null;
+        }
+        Number maxNumber = values[0];
+        for (int i = 1; i < size; i++) {
+            if (CollectionUtil.compareNumber(values[i], maxNumber) > 0) {
+                maxNumber = values[i];
+            }
+        }
+        return maxNumber;
+    }
+
+    public Number getMin() {
+        if (size == 0) {
+            return null;
+        }
+        Number minNumber = values[0];
+        for (int i = 1; i < size; i++) {
+            if (CollectionUtil.compareNumber(values[i], minNumber) < 0) {
+                minNumber = values[i];
+            }
+        }
+        return minNumber;
+    }
+
+    public MathSet cut(int firstIndex, int lastIndex) {
+        MathSet newMathSet = new MathSet();
+        for (int i = 0; i < size; i++) {
+            if (i < firstIndex || i > lastIndex) {
+                newMathSet.add(this.get(i));
+            }
+        }
+        return newMathSet;
+    }
+
+    public Number getAverage() {
+        if (size == 0) {
+            return null;
+        }
+        Number sum = values[0];
+        for (int i = 1; i < size; i++) {
+            sum = CollectionUtil.additionNumber(sum, values[i]);
+        }
+        return CollectionUtil.divideNumber(sum, size);
+    }
+
+    public Number getMedian() {
+        if (size == 0) {
+            return null;
+        }
+        MathSet sortSet = new MathSet(this);
+        sortSet.sortAsc();
+        return sortSet.get(size / 2);
     }
 
     private boolean notExist(Number number) {
@@ -137,6 +254,28 @@ public class MathSet implements SimpleSet<Number> {
         return true;
     }
 
+    public void clear() {
+        this.size = 0;
+    }
+
+    public void clear(Number[] numbers) {
+        Number[] tempNumbers = copyOf(values, size);
+        clear();
+        for (int i = 0; i < tempNumbers.length; i++) {
+            Number tempNumber = tempNumbers[i];
+            boolean isNotCompare = true;
+            for (int j = 0; j < numbers.length; j++) {
+                Number number = numbers[j];
+                if (tempNumber.equals(number)) {
+                    isNotCompare = false;
+                }
+            }
+            if (isNotCompare) {
+                add(tempNumber);
+            }
+        }
+    }
+
     @Override
     public int size() {
         return size;
@@ -152,8 +291,19 @@ public class MathSet implements SimpleSet<Number> {
         return new MathSetIterator(this);
     }
 
-    Number[] asArray() {
+    Number[] toArray() {
         return copyOf(values, size);
+    }
+
+    Number[] toArray(int firstIndex, int lastIndex) {
+        Number[] setNumbers = toArray();
+        if (firstIndex < 0 || firstIndex >= size || lastIndex < 0 || lastIndex >= size) {
+            throw new ArrayIndexOutOfBoundsException(String.format("firstIndex = %d, lastIndex = %d, size = %d", firstIndex, lastIndex, size));
+        }
+        int newLength = lastIndex - firstIndex + 1;
+        Number[] newNumbers = new Number[newLength];
+        System.arraycopy(setNumbers, firstIndex, newNumbers, 0, newLength);
+        return newNumbers;
     }
 
     @Override
