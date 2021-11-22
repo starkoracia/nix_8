@@ -1,8 +1,9 @@
 package ua.com.alevel.util;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 
-public class CollectionUtil {
+public final class CollectionUtil {
     private CollectionUtil() { }
 
     public static String arrayToString(Object[] a) {
@@ -32,27 +33,21 @@ public class CollectionUtil {
     }
 
     private static void merge(Number[] array, int left, int mid, int right, boolean isAsc) {
-        // calculating lengths
         int lengthLeft = mid - left + 1;
         int lengthRight = right - mid;
 
-        // creating temporary subarrays
         Number[] leftArray = new Number[lengthLeft];
         Number[] rightArray = new Number[lengthRight];
 
-        // copying our sorted subarrays into temporaries
         for (int i = 0; i < lengthLeft; i++)
             leftArray[i] = array[left + i];
         for (int i = 0; i < lengthRight; i++)
             rightArray[i] = array[mid + i + 1];
 
-        // iterators containing current index of temp subarrays
         int leftIndex = 0;
         int rightIndex = 0;
 
-        // copying from leftArray and rightArray back into array
         for (int i = left; i < right + 1; i++) {
-            // if there are still uncopied elements in R and L, copy minimum of the two
             if (leftIndex < lengthLeft && rightIndex < lengthRight) {
                 if (isAscCompare(compareNumber(leftArray[leftIndex], rightArray[rightIndex]), isAsc)) {
                     array[i] = leftArray[leftIndex];
@@ -62,12 +57,10 @@ public class CollectionUtil {
                     rightIndex++;
                 }
             }
-            // if all the elements have been copied from rightArray, copy the rest of leftArray
             else if (leftIndex < lengthLeft) {
                 array[i] = leftArray[leftIndex];
                 leftIndex++;
             }
-            // if all the elements have been copied from leftArray, copy the rest of rightArray
             else if (rightIndex < lengthRight) {
                 array[i] = rightArray[rightIndex];
                 rightIndex++;
@@ -93,6 +86,6 @@ public class CollectionUtil {
     }
 
     public static Number divideNumber(Number a, Number b) {
-        return new BigDecimal(a.toString()).divide(new BigDecimal(b.toString())).doubleValue();
+        return new BigDecimal(a.toString()).divide(new BigDecimal(b.toString()), RoundingMode.HALF_UP).doubleValue();
     }
 }

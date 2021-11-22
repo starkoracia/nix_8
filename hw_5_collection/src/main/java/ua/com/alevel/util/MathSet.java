@@ -1,5 +1,7 @@
 package ua.com.alevel.util;
 
+import ua.com.alevel.util.interfaces.SimpleSet;
+
 import java.util.Iterator;
 
 public class MathSet implements SimpleSet<Number> {
@@ -291,11 +293,11 @@ public class MathSet implements SimpleSet<Number> {
         return new MathSetIterator(this);
     }
 
-    Number[] toArray() {
+    public Number[] toArray() {
         return copyOf(values, size);
     }
 
-    Number[] toArray(int firstIndex, int lastIndex) {
+    public Number[] toArray(int firstIndex, int lastIndex) {
         Number[] setNumbers = toArray();
         if (firstIndex < 0 || firstIndex >= size || lastIndex < 0 || lastIndex >= size) {
             throw new ArrayIndexOutOfBoundsException(String.format("firstIndex = %d, lastIndex = %d, size = %d", firstIndex, lastIndex, size));

@@ -12,7 +12,7 @@
     <artifactId>hw_5_collection</artifactId>
 
     <properties>
-        <app.main.class>ua.com.alevel.LogsAndTestMain</app.main.class>
+        <app.main.class>ua.com.alevel.CollectionMain</app.main.class>
         <app.moduleName>${artifactId}</app.moduleName>
     </properties>
 

@@ -1,4 +1,4 @@
-package ua.com.alevel.util;
+package ua.com.alevel.util.interfaces;
 
 public interface SimpleSet<E> extends Iterable<E> {
     boolean add(E e);
