@@ -6,6 +6,7 @@ public class StartDiTestMain {
     public static void main(String[] args) throws IOException {
 //        HomeworkStarter.run();
 
-        StarkoDIApplication.runApplication(StartDiTestMain.class);
+//        StarkoDIApplication.runApplication(StartDiTestMain.class);
+
     }
 }
