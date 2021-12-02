@@ -3,9 +3,7 @@ package ua.com.alevel.util;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
-public class DateT {
-
-    private Long dateTimeInMillis;
+public class DateT implements Comparable<DateT> {
 
     private static final int ONE_SECOND = 1000;
     private static final int ONE_MINUTE = 60 * ONE_SECOND;
@@ -23,13 +21,66 @@ public class DateT {
     static final int LEAP_MONTH_LENGTH[]
             = {31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
 
+    private Long dateTimeInMillis;
+
+    private Integer year = 0;
+    private Integer month = 0;
+    private Integer day = 0;
+    private Integer hours = 0;
+    private Integer minutes = 0;
+    private Integer seconds = 0;
+    private Integer millis = 0;
+
     public DateT(Long dateTimeInMillis) {
         this.dateTimeInMillis = dateTimeInMillis;
+        calculateDateFromMillis(dateTimeInMillis);
     }
 
-    public long calculateYear(Long dateTimeInMillis) {
-        Long tempMillis = 0L;
-        int year = 1970;
+    public DateT(DateT dateT) {
+        this.dateTimeInMillis = createMillis(dateT);
+        calculateDateFromMillis(dateTimeInMillis);
+    }
+
+    public void add(DateT dateT) {
+
+    }
+
+    private long createMillis(DateT dateT) {
+        long tempMillis = 0L;
+        int year = 0;
+        while (year < dateT.getYear()) {
+            if (isLeap(year)) {
+                tempMillis += LEAP_YEAR_IN_MILLIS;
+            } else {
+                tempMillis += YEAR_IN_MILLIS;
+            }
+            year++;
+        }
+
+        for (int month = 0; month < dateT.getMonth() - 1; month++) {
+            long currentMonthInMillis = monthInMillis(month, isLeap(year));
+            tempMillis += currentMonthInMillis;
+        }
+
+        long daysInMillis = (dateT.getDay() - 1) * ONE_DAY;
+        tempMillis += daysInMillis;
+
+        long hoursInMillis = dateT.getHours() * ONE_HOUR;
+        tempMillis += hoursInMillis;
+
+        long minutesInMillis = dateT.getMinutes() * ONE_MINUTE;
+        tempMillis += minutesInMillis;
+
+        long secondsInMillis = dateT.getSeconds() * ONE_SECOND;
+        tempMillis += secondsInMillis;
+
+        tempMillis += dateT.getMillis();
+
+        return tempMillis;
+    }
+
+    private void calculateDateFromMillis(Long dateTimeInMillis) {
+        long tempMillis = 0L;
         while (true) {
             if (isLeap(year)) {
                 if (tempMillis + LEAP_YEAR_IN_MILLIS > dateTimeInMillis) {
@@ -44,67 +95,39 @@ public class DateT {
             }
             year++;
         }
-
-        System.out.println("year = " + year);
-
         long monthsInMillis = dateTimeInMillis - tempMillis;
 
         tempMillis = 0L;
-        int month;
-        for (month = 0; month < 12; month++) {
-            Long currentMonthInMillis = monthInMillis(month, isLeap(year));
+        for (; month < 12; month++) {
+            long currentMonthInMillis = monthInMillis(month, isLeap(year));
             if (tempMillis + currentMonthInMillis > monthsInMillis) {
                 month++;
                 break;
             }
             tempMillis += currentMonthInMillis;
         }
-
-        System.out.println("month = " + month);
-
         long daysInMillis = monthsInMillis - tempMillis;
-
-        long days = daysInMillis / ONE_DAY + 1;
-
-        System.out.println("days = " + days);
+        day += (int) (daysInMillis / ONE_DAY + 1);
 
         long hoursInMillis = daysInMillis % ONE_DAY;
-        long hours = hoursInMillis / ONE_HOUR;
-
-        System.out.println("hours = " + hours);
+        hours += (int) (hoursInMillis / ONE_HOUR);
 
         long minutesInMillis = hoursInMillis % ONE_HOUR;
-        long minutes = minutesInMillis / ONE_MINUTE;
-
-        System.out.println("minutes = " + minutes);
+        minutes += (int) (minutesInMillis / ONE_MINUTE);
 
         long secondsInMillis = minutesInMillis % ONE_MINUTE;
-        long seconds = secondsInMillis / ONE_SECOND;
+        seconds += (int) (secondsInMillis / ONE_SECOND);
 
-        System.out.println("seconds = " + seconds);
+        millis += (int) (secondsInMillis % ONE_SECOND);
+    }
 
-        long millis = secondsInMillis % ONE_SECOND;
-
-        System.out.println("millis = " + millis);
-        return days;
-
+    public DateT difference(DateT dateT) {
+        long differenceInMillis = Math.abs(this.dateTimeInMillis - dateT.getDateTimeInMillis());
+        return new DateT(differenceInMillis);
     }
 
     private boolean isLeap(int year) {
         return year % 400 == 0 || (year % 4 == 0 && year % 100 != 0);
-    }
-
-    public Integer calculateMonth(Long monthsInMillis, boolean isLeap) {
-        Long tempMillis = 0L;
-        int month;
-        for (month = 0; month < 12; month++) {
-            Long currentMonthInMillis = monthInMillis(month, isLeap);
-            if (tempMillis + currentMonthInMillis > monthsInMillis) {
-                break;
-            }
-            tempMillis += currentMonthInMillis;
-        }
-        return month + 1;
     }
 
     private Long monthInMillis(int month, boolean isLeap) {
@@ -116,24 +139,105 @@ public class DateT {
     }
 
     public static void main(String[] args) {
-        long currentTimeMillis = System.currentTimeMillis();
-        System.out.println("currentTimeMillis = " + currentTimeMillis);
 
-        DateT dateT = new DateT(currentTimeMillis);
-
-
-//        Calendar calendar = new GregorianCalendar(2038, 5, 15);
+        Calendar calendar38 = new GregorianCalendar(2038, 5, 15);
         Calendar calendar = GregorianCalendar.getInstance();
-        System.out.println("calendar = " + calendar);
-        calendar.add(Calendar.DATE, 35);
+//        calendar.add(Calendar.DATE, 35);
         long time = calendar.getTimeInMillis();
 
-        long calculateYear = dateT.calculateYear(time);
-//        System.out.println("calculateYear = " + calculateYear);
+        DateT dateT = new DateT(time);
+        DateT dateT38 = new DateT(calendar38.getTimeInMillis());
+        DateT dateInMillis = new DateT(dateT);
 
-//        long monthsMillis = currentTimeMillis - calculateYear;
-//        Integer month = dateT.calculateMonth(monthsMillis, false);
-//        System.out.println("month = " + month);
+        DateT difference = dateT38.difference(dateT);
+
+        System.out.println("dateT = " + dateT);
+        System.out.println("dateT38 = " + dateT38);
+        System.out.println("difference = " + difference);
+
+        System.out.println("\ndateInMillis = " + dateInMillis);
     }
 
+    public Long getDateTimeInMillis() {
+        return dateTimeInMillis;
+    }
+
+    public void setDateTimeInMillis(Long dateTimeInMillis) {
+        this.dateTimeInMillis = dateTimeInMillis;
+    }
+
+    public Integer getYear() {
+        return year;
+    }
+
+    public void setYear(Integer year) {
+        this.year = year;
+    }
+
+    public Integer getMonth() {
+        return month;
+    }
+
+    public void setMonth(Integer month) {
+        this.month = month;
+    }
+
+    public Integer getDay() {
+        return day;
+    }
+
+    public void setDay(Integer day) {
+        this.day = day;
+    }
+
+    public Integer getHours() {
+        return hours;
+    }
+
+    public void setHours(Integer hours) {
+        this.hours = hours;
+    }
+
+    public Integer getMinutes() {
+        return minutes;
+    }
+
+    public void setMinutes(Integer minutes) {
+        this.minutes = minutes;
+    }
+
+    public Integer getSeconds() {
+        return seconds;
+    }
+
+    public void setSeconds(Integer seconds) {
+        this.seconds = seconds;
+    }
+
+    public Integer getMillis() {
+        return millis;
+    }
+
+    public void setMillis(Integer millis) {
+        this.millis = millis;
+    }
+
+    @Override
+    public String toString() {
+        return "DateT{" +
+                "dateTimeInMillis=" + dateTimeInMillis +
+                ", year=" + year +
+                ", month=" + month +
+                ", day=" + day +
+                ", hours=" + hours +
+                ", minutes=" + minutes +
+                ", seconds=" + seconds +
+                ", millis=" + millis +
+                '}';
+    }
+
+    @Override
+    public int compareTo(DateT o) {
+        return Long.compare(this.dateTimeInMillis, o.getDateTimeInMillis());
+    }
 }
