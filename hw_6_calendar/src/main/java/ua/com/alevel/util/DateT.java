@@ -1,13 +1,14 @@
 package ua.com.alevel.util;
 
-import java.util.Calendar;
-import java.util.GregorianCalendar;
+import java.util.regex.MatchResult;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class DateT implements Comparable<DateT> {
 
-    private static final int ONE_SECOND = 1000;
-    private static final int ONE_MINUTE = 60 * ONE_SECOND;
-    private static final int ONE_HOUR = 60 * ONE_MINUTE;
+    private static final long ONE_SECOND = 1000;
+    private static final long ONE_MINUTE = 60 * ONE_SECOND;
+    private static final long ONE_HOUR = 60 * ONE_MINUTE;
     private static final long ONE_DAY = 24 * ONE_HOUR;
     private static final long ONE_WEEK = 7 * ONE_DAY;
 
@@ -21,7 +22,7 @@ public class DateT implements Comparable<DateT> {
     static final int LEAP_MONTH_LENGTH[]
             = {31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
 
-    private Long dateTimeInMillis;
+    private Long dateTimeInMillis = 0L;
 
     private Integer year = 0;
     private Integer month = 0;
@@ -30,22 +31,107 @@ public class DateT implements Comparable<DateT> {
     private Integer minutes = 0;
     private Integer seconds = 0;
     private Integer millis = 0;
+    private String pattern = "dd/mm/yyyy 00:00:00";
+
+    public DateT() {
+
+    }
 
     public DateT(Long dateTimeInMillis) {
         this.dateTimeInMillis = dateTimeInMillis;
-        calculateDateFromMillis(dateTimeInMillis);
+        createDateFromMillis(dateTimeInMillis);
     }
 
     public DateT(DateT dateT) {
-        this.dateTimeInMillis = createMillis(dateT);
-        calculateDateFromMillis(dateTimeInMillis);
+        this.dateTimeInMillis = createMillisFromDate(dateT);
+        createDateFromMillis(dateTimeInMillis);
     }
 
-    public void add(DateT dateT) {
+    public DateT(DateT dateT, String pattern) {
+        this.dateTimeInMillis = createMillisFromDate(dateT);
+        createDateFromMillis(dateTimeInMillis);
+        this.pattern = pattern;
+    }
+
+    public DateT(Long dateTimeInMillis, String pattern) {
+        this.dateTimeInMillis = dateTimeInMillis;
+        createDateFromMillis(dateTimeInMillis);
+        this.pattern = pattern;
+    }
+
+    public void create() {
+        this.dateTimeInMillis = createMillisFromDate(this);
+    }
+
+    private void resetFields() {
+        this.year = 0;
+        this.month = 0;
+        this.day = 0;
+        this.hours = 0;
+        this.minutes = 0;
+        this.seconds = 0;
+        this.millis = 0;
+    }
+
+    public static void main(String[] args) {
+
+        String patternD = "^(3[01]|[12][0-9]|[1-9])";
+        String firstDelimiter = "/";
+
+        String regex = "^(0?[1-9]|[12][0-9]|3[01])[/-](0?[1-9]|1[012])[/-](\\d{4})\\s?([01][0-9]|2[0-4])(:[0-5][0-9])(:[0-5][0-9])(:[0-9][0-9][0-9])$";
+
+        String input = "1/02/0450 24:59:59:459";
+
+        String datePattern = "dd/mm/yyyy 00:00:00";
+        DateT dateT = new DateT(63805771197473L,datePattern);
+
+        String replace = dateT.toString();
+        System.out.println("replace = " + replace);
+
+        String[] split = replace.split("[/\\s]");
+        for (String s : split) {
+            System.out.println("s = " + s);
+        }
+        String time = split[3];
+        String[] splitTime = time.split(":");
+        for (String t : splitTime) {
+            System.out.println("t = " + t);
+        }
 
     }
 
-    private long createMillis(DateT dateT) {
+    public void setPattern(String pattern) {
+        this.pattern = pattern;
+    }
+
+    public void addYears(int years) {
+        this.year += years;
+        this.dateTimeInMillis = createMillisFromDate(this);
+    }
+
+    public void addDays(int days) {
+        addMillis(days * ONE_DAY);
+    }
+
+    public void addHours(int hours) {
+        addMillis(hours * ONE_HOUR);
+    }
+
+    public void addMinutes(int minutes) {
+        addMillis(minutes * ONE_MINUTE);
+    }
+
+    public void addSeconds(int seconds) {
+        addMillis(seconds * ONE_SECOND);
+    }
+
+    public void addMillis(long millis) {
+        this.dateTimeInMillis += millis;
+        resetFields();
+        createDateFromMillis(this.dateTimeInMillis);
+    }
+
+    private long createMillisFromDate(DateT dateT) {
         long tempMillis = 0L;
         int year = 0;
         while (year < dateT.getYear()) {
@@ -79,7 +165,7 @@ public class DateT implements Comparable<DateT> {
         return tempMillis;
     }
 
-    private void calculateDateFromMillis(Long dateTimeInMillis) {
+    private void createDateFromMillis(Long dateTimeInMillis) {
         long tempMillis = 0L;
         while (true) {
             if (isLeap(year)) {
@@ -136,26 +222,6 @@ public class DateT implements Comparable<DateT> {
         } else {
             return MONTH_LENGTH[month] * ONE_DAY;
         }
-    }
-
-    public static void main(String[] args) {
-
-        Calendar calendar38 = new GregorianCalendar(2038, 5, 15);
-        Calendar calendar = GregorianCalendar.getInstance();
-//        calendar.add(Calendar.DATE, 35);
-        long time = calendar.getTimeInMillis();
-
-        DateT dateT = new DateT(time);
-        DateT dateT38 = new DateT(calendar38.getTimeInMillis());
-        DateT dateInMillis = new DateT(dateT);
-
-        DateT difference = dateT38.difference(dateT);
-
-        System.out.println("dateT = " + dateT);
-        System.out.println("dateT38 = " + dateT38);
-        System.out.println("difference = " + difference);
-
-        System.out.println("\ndateInMillis = " + dateInMillis);
     }
 
     public Long getDateTimeInMillis() {
@@ -224,16 +290,30 @@ public class DateT implements Comparable<DateT> {
 
     @Override
     public String toString() {
-        return "DateT{" +
-                "dateTimeInMillis=" + dateTimeInMillis +
-                ", year=" + year +
-                ", month=" + month +
-                ", day=" + day +
-                ", hours=" + hours +
-                ", minutes=" + minutes +
-                ", seconds=" + seconds +
-                ", millis=" + millis +
-                '}';
+        if(this.pattern == null) {
+            return "DateT{" +
+                    "dateTimeInMillis=" + dateTimeInMillis +
+                    ", year=" + year +
+                    ", month=" + month +
+                    ", day=" + day +
+                    ", hours=" + hours +
+                    ", minutes=" + minutes +
+                    ", seconds=" + seconds +
+                    ", millis=" + millis +
+                    '}';
+        } else {
+            return this.pattern
+                    .replace("dd", String.format("%02d", this.getDay()))
+                    .replace("d", String.format("%d", this.getDay()))
+                    .replace("mmm", String.format("%s", Month.values()[this.getMonth() - 1].getName()))
+                    .replace("mm", String.format("%02d", this.getMonth()))
+                    .replace("m", String.format("%d", this.getMonth()))
+                    .replace("yyyy", String.format("%04d", this.getYear()))
+                    .replace("-", " ")
+                    .replace("00:00:00:000", String.format("%02d:%02d:%02d:%03d", this.getHours(), this.getMinutes(), this.getSeconds(), this.getMillis()))
+                    .replace("00:00:00", String.format("%02d:%02d:%02d", this.getHours(), this.getMinutes(), this.getSeconds()))
+                    .replace("00:00", String.format("%02d:%02d", this.getHours(), this.getMinutes()));
+        }
     }
 
     @Override
