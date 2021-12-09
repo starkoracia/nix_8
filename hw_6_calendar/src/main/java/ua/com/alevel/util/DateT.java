@@ -1,9 +1,5 @@
 package ua.com.alevel.util;
 
-import java.util.regex.MatchResult;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 public class DateT implements Comparable<DateT> {
 
     private static final long ONE_SECOND = 1000;
@@ -71,33 +67,6 @@ public class DateT implements Comparable<DateT> {
         this.minutes = 0;
         this.seconds = 0;
         this.millis = 0;
-    }
-
-    public static void main(String[] args) {
-
-        String patternD = "^(3[01]|[12][0-9]|[1-9])";
-        String firstDelimiter = "/";
-
-        String regex = "^(0?[1-9]|[12][0-9]|3[01])[/-](0?[1-9]|1[012])[/-](\\d{4})\\s?([01][0-9]|2[0-4])(:[0-5][0-9])(:[0-5][0-9])(:[0-9][0-9][0-9])$";
-
-        String input = "1/02/0450 24:59:59:459";
-
-        String datePattern = "dd/mm/yyyy 00:00:00";
-        DateT dateT = new DateT(63805771197473L,datePattern);
-
-        String replace = dateT.toString();
-        System.out.println("replace = " + replace);
-
-        String[] split = replace.split("[/\\s]");
-        for (String s : split) {
-            System.out.println("s = " + s);
-        }
-        String time = split[3];
-        String[] splitTime = time.split(":");
-        for (String t : splitTime) {
-            System.out.println("t = " + t);
-        }
-
     }
 
     public void setPattern(String pattern) {

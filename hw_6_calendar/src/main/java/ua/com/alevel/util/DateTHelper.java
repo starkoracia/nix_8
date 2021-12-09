@@ -6,7 +6,7 @@ import java.util.regex.Pattern;
 
 public class DateTHelper {
 
-    public String createRegexFromPattern(String pattern) {
+    public static String createRegexFromPattern(String pattern) {
         String d = "(3[01]|[12][0-9]|[1-9])";
         String dd = "(0?[1-9]|[12][0-9]|3[01])";
         String mmm = "(Январь|Февраль|Март|Апрель|Май|Июнь|Июль|Август|Сентябрь|Октябрь|Ноябрь|Декабрь)";
@@ -31,7 +31,7 @@ public class DateTHelper {
                 + "$";
     }
 
-    private void setDateFromMap(DateT dateT, Map<String, Integer> dateTimeMap) {
+    private static void setDateFromMap(DateT dateT, Map<String, Integer> dateTimeMap) {
         Integer year = dateTimeMap.get("year");
         if(year != null) {
             dateT.setYear(year);
@@ -60,9 +60,10 @@ public class DateTHelper {
         if(millis != null) {
             dateT.setMillis(millis);
         }
+        dateT.create();
     }
 
-    private List<String> createDateTimeList(String pattern, String dateString) {
+    private static List<String> createDateTimeList(String pattern, String dateString) {
         List<String> dateTimeList = new ArrayList<>();
         Pattern regexPattern = Pattern.compile(createRegexFromPattern(pattern));
         Matcher matcher = regexPattern.matcher(dateString);
@@ -74,8 +75,8 @@ public class DateTHelper {
         return dateTimeList;
     }
 
-    private Map<String, Integer> createDateTimeMap(String pattern, List<String> dateTimeList) {
-        String parseRegex = "^(dd|d|mmm|mm|m|yyyy)[/-](dd|d|mmm|mm|m)[/-](dd|d|mmm|mm|m|yyyy) (00):(00):?(00)?:?(000)?$";
+    private static Map<String, Integer> createDateTimeMap(String pattern, List<String> dateTimeList) {
+        String parseRegex = "^(dd|d|mmm|mm|m|yyyy)[/-](dd|d|mmm|mm|m)[/-](dd|d|mmm|mm|m|yyyy)( (00):(00):?(00)?:?(000)?)?$";
         Map<String, Integer> dateTimeMap = new HashMap<>();
         dateTimeMap.put("day", null);
         dateTimeMap.put("month", null);
@@ -104,10 +105,10 @@ public class DateTHelper {
                         case "yyyy" -> dateTimeMap.put("year", Integer.parseInt(dateTimeList.get(i - 1)));
                     }
                     switch (i) {
-                        case 4 -> dateTimeMap.put("hours", Integer.parseInt(dateTimeList.get(i - 1)));
-                        case 5 -> dateTimeMap.put("minutes", Integer.parseInt(dateTimeList.get(i - 1)));
-                        case 6 -> dateTimeMap.put("seconds", Integer.parseInt(dateTimeList.get(i - 1)));
-                        case 7 -> dateTimeMap.put("millis", Integer.parseInt(dateTimeList.get(i - 1)));
+                        case 5 -> dateTimeMap.put("hours", Integer.parseInt(dateTimeList.get(i - 2)));
+                        case 6 -> dateTimeMap.put("minutes", Integer.parseInt(dateTimeList.get(i - 2)));
+                        case 7 -> dateTimeMap.put("seconds", Integer.parseInt(dateTimeList.get(i - 2)));
+                        case 8 -> dateTimeMap.put("millis", Integer.parseInt(dateTimeList.get(i - 2)));
                     }
                 }
             }
@@ -115,7 +116,7 @@ public class DateTHelper {
         return dateTimeMap;
     }
 
-    public DateT createDateFromString(String pattern, String dateString) {
+    public static DateT createDateFromString(String dateString, String pattern) {
         DateT dateT = new DateT();
         dateT.setPattern(pattern);
 
@@ -129,11 +130,22 @@ public class DateTHelper {
     }
 
     public static void main(String[] args) {
-        String pattern = "d-mm-yyyy 00:00";
-        String dateString = "15 04 1991 21:00";
-        DateTHelper creator = new DateTHelper();
-        DateT dateT = creator.createDateFromString(pattern, dateString);
-        System.out.println("dateT = " + dateT);
+        String pattern = "d-mm-yyyy";
+        String dateString = "15 04 1991";
+        String dateTimePatternChecker = "^(((yyyy/(dd|d)/(mmm|mm|m))|(yyyy/(mmm|mm|m)/(dd|d))|((mmm|mm|m)/(dd|d)/yyyy)|((dd|d)/(mmm|mm|m)/yyyy))|((yyyy-(dd|d)-(mmm|mm|m))|(yyyy-(mmm|mm|m)-(dd|d))|((mmm|mm|m)-(dd|d)-yyyy)|((dd|d)-(mmm|mm|m)-yyyy)))( (00):(00)((:00)(:000)|(:00))?)?$";
+        Matcher matcher = Pattern.compile(dateTimePatternChecker).matcher(pattern);
+
+        if(matcher.find()) {
+            matcher = Pattern.compile(DateTHelper.createRegexFromPattern(pattern)).matcher(dateString);
+            if (matcher.find()) {
+                DateTHelper dateHelper = new DateTHelper();
+                DateT dateT = dateHelper.createDateFromString(pattern, dateString);
+                System.out.println("dateT = " + dateT);
+            } else {
+                System.out.println("Pattern error!");
+            }
+        }
+
     }
 
 }
