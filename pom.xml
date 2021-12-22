@@ -66,6 +66,7 @@
         <module>hw_4_logs_and_test</module>
         <module>hw_5_collection</module>
         <module>hw_6_calendar</module>
+        <module>module_2</module>
     </modules>
 
 
@@ -137,6 +138,12 @@
             <artifactId>logback-core</artifactId>
             <version>${logback.version}</version>
         </dependency>
+        <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+            <version>2.11.0</version>
+        </dependency>
+
     </dependencies>
 
 
