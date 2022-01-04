@@ -7,7 +7,7 @@ import ua.com.alevel.entity.User;
 import ua.com.alevel.service.MessageService;
 import ua.com.alevel.service.UserService;
 import ua.com.alevel.utils.ConsoleHelperUtil;
-import ua.com.alevel.utils.DBHelperUtil;
+import ua.com.alevel.utils.StorageOfState;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -117,6 +117,5 @@ public class MessagesController implements ConsoleController {
         System.out.println("\n Нажмите enter для продолжения");
         reader.readLine();
     }
-
 
 }

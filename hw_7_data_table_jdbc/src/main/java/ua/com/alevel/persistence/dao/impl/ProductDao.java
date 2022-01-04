@@ -1,43 +1,116 @@
 package ua.com.alevel.persistence.dao.impl;
 
+import org.springframework.stereotype.Service;
+import ua.com.alevel.config.jpa.JpaConnector;
 import ua.com.alevel.persistence.dao.DaoProduct;
 import ua.com.alevel.persistence.entity.Product;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.List;
 
+import static ua.com.alevel.persistence.dao.SQLQueryUtil.*;
+
+@Service
 public class ProductDao implements DaoProduct {
-    @Override
-    public void create(Product entity) {
 
+    JpaConnector connector;
+
+    public ProductDao(JpaConnector connector) {
+        this.connector = connector;
     }
 
     @Override
-    public void update(Product entity) {
-
+    public void create(Product product) {
+        String createQuery = String.format(PRODUCT_CREATE_SQL_QUERY,
+                product.getProductName(),
+                product.getPrice().toString());
+        try (Statement statement = connector.getConnection().createStatement()) {
+            statement.executeUpdate(createQuery);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
-    public void delete(Product entity) {
-
+    public void update(Product product) {
+        String updateQuery = String.format(PRODUCT_UPDATE_SQL_QUERY,
+                product.getProductName(),
+                product.getPrice().toString(),
+                product.getId());
+        try (Statement statement = connector.getConnection().createStatement()) {
+            statement.executeUpdate(updateQuery);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
-    public Product findById(Long aLong) {
+    public void delete(Product product) {
+        String deleteQuery = String.format(PRODUCT_DELETE_SQL_QUERY,
+                product.getId());
+        try (Statement statement = connector.getConnection().createStatement()) {
+            statement.executeUpdate(deleteQuery);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public Product findById(Long id) {
+        String findByIdQuery = String.format(PRODUCT_FIND_BY_ID_SQL_QUERY,
+                id);
+        try (Statement statement = connector.getConnection().createStatement()) {
+            ResultSet resultSet = statement.executeQuery(findByIdQuery);
+            if (resultSet.next()) {
+                Product product = new Product();
+                product.setId(resultSet.getLong("id"));
+                product.setProductName(resultSet.getString("product_name"));
+                product.setPrice(resultSet.getBigDecimal("price"));
+                return product;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
         return null;
     }
 
     @Override
-    public boolean existById(Long aLong) {
-        return false;
+    public boolean existById(Long id) {
+        return findById(id) != null;
     }
 
     @Override
     public List<Product> findAll() {
-        return null;
+        List<Product> productsList = new ArrayList<>();
+        try (Statement statement = connector.getConnection().createStatement()) {
+            ResultSet resultSet = statement.executeQuery(PRODUCT_FIND_ALL_SQL_QUERY);
+            while (resultSet.next()) {
+                Product product = new Product();
+                product.setId(resultSet.getLong("id"));
+                product.setProductName(resultSet.getString("product_name"));
+                product.setPrice(resultSet.getBigDecimal("price"));
+                productsList.add(product);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return productsList;
     }
 
     @Override
     public long count() {
+        try (Statement statement = connector.getConnection().createStatement()) {
+            ResultSet resultSet = statement.executeQuery(PRODUCT_COUNT_SQL_QUERY);
+            if (resultSet.next()) {
+                return resultSet.getLong("count");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
         return 0;
     }
+
 }

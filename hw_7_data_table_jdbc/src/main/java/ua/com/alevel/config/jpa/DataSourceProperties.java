@@ -10,9 +10,9 @@ import org.springframework.context.annotation.Configuration;
 @Getter
 @Setter
 public class DataSourceProperties {
-
     private String url;
     private String driverClassName;
     private String username;
     private String password;
+
 }

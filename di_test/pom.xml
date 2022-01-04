@@ -22,6 +22,12 @@
             <artifactId>starko_spring</artifactId>
             <version>1.0</version>
         </dependency>
+        <dependency>
+            <groupId>com.starkoracia</groupId>
+            <artifactId>hw_3_start_oop</artifactId>
+            <version>1.0</version>
+            <scope>compile</scope>
+        </dependency>
     </dependencies>
 
 </project>
