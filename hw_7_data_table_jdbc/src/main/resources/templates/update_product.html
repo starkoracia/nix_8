@@ -30,7 +30,7 @@
                         <td th:text="${productToUpdate.getProductName()}"></td>
                         <td th:text="${productToUpdate.getPrice()}"></td>
                         <td>
-                            <form th:action="${'/delete_product/' + productToUpdate.getId()}" method="post">
+                            <form th:action="${'/products/delete_product/' + productToUpdate.getId()}" method="post">
                                 <button type="submit" class="btn btn-link">Удалить</button>
                             </form>
                         </td>
@@ -46,7 +46,7 @@
                 <h4>Изменение данных товара:</h4>
             </div>
             <div class="card-body">
-                <form th:action="${'/update_product/' + productToUpdate.getId()}" method="post">
+                <form th:action="${'/products/update_product/' + productToUpdate.getId()}" method="post">
                     <div class="create_product_form">
                         <div class="labels">
                             <label> Наименование: </label>

@@ -1,14 +1,14 @@
 package ua.com.alevel.persistence.entity;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 
 @NoArgsConstructor
-@AllArgsConstructor
 @Data
 @Entity
 @Table(name = "products")
@@ -22,4 +22,20 @@ public class Product extends BaseEntity {
     @Column(nullable = false)
     private BigDecimal price;
 
+    @ManyToMany(mappedBy = "products")
+    private List<Order> orders = new ArrayList<>();
+
+    public Product(Long id, String productName, BigDecimal price) {
+        this.id = id;
+        this.productName = productName;
+        this.price = price;
+    }
+
+    public List<Order> getOrders() {
+        return orders;
+    }
+
+    public void setOrders(List<Order> orders) {
+        this.orders = orders;
+    }
 }

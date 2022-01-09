@@ -5,7 +5,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import ua.com.alevel.persistence.dao.impl.ProductDao;
 import ua.com.alevel.persistence.entity.Product;
-import ua.com.alevel.util.Page;
 import ua.com.alevel.util.ProductPage;
 
 import javax.servlet.http.HttpServletRequest;
@@ -14,23 +13,23 @@ import java.util.List;
 import java.util.Map;
 
 @Controller
-@RequestMapping("/")
-public class ProductsController {
+@RequestMapping("/products")
+public class ProductController {
 
     ProductDao productDao;
     String errorMessage = "Заполните имя продукта";
 
-    public ProductsController(ProductDao productDao) {
+    public ProductController(ProductDao productDao) {
         this.productDao = productDao;
     }
 
-    @GetMapping("/products")
+    @GetMapping
     public String getProducts(Model model, @RequestParam Map<String, String> allRequestParams) {
         prepareProductsModel(model, allRequestParams);
         return "products";
     }
 
-    @PostMapping("/products")
+    @PostMapping
     public String getProductsUpdate(Model model, @RequestParam Map<String, String> allRequestParams,
                                     @ModelAttribute("number_of_rows") int numberOfRows) {
         prepareProductsModel(model, allRequestParams);

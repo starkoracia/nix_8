@@ -49,12 +49,12 @@
                         <td th:text="${prod.getProductName()}"></td>
                         <td th:text="${prod.getPrice()}"></td>
                         <td>
-                            <form th:action="${'/delete_product/' + prod.getId()}" method="post">
+                            <form th:action="${'/products/delete_product/' + prod.getId()}" method="post">
                                 <button type="submit" class="btn btn-link">Удалить</button>
                             </form>
                         </td>
                         <td>
-                            <form th:action="${'/update_product/' + prod.getId()}" method="get">
+                            <form th:action="${'/products/update_product/' + prod.getId()}" method="get">
                                 <button type="submit" class="btn btn-link">Изменить</button>
                             </form>
                         </td>
@@ -116,7 +116,7 @@
                 <h4>Добаление нового товара:</h4>
             </div>
             <div class="card-body">
-                <form th:action="@{/create_product(
+                <form th:action="@{/products/create_product(
                 number_of_rows=${productPage.getNumberOfRows()},
                 )}" method="post"
                       th:object="${product}">

@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.w3.org/1999/xhtml"
+      layout:decorate="~{layouts/layout}">>
+<head>
+    <link th:href="@{/css/customers.css}" rel="stylesheet"/>
+</head>
+<body>
+
+<div layout:fragment="content">
+    <p th:text="${customer.getId() + ' ' + customer.getFirstName() + ' ' + customer.getPhoneNumber()}"
+</div>
+
+</body>
+</html>
