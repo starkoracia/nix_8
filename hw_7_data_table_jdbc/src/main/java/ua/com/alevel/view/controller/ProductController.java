@@ -30,8 +30,8 @@ public class ProductController {
     }
 
     @PostMapping
-    public String getProductsUpdate(Model model, @RequestParam Map<String, String> allRequestParams,
-                                    @ModelAttribute("number_of_rows") int numberOfRows) {
+    public String getProductsUpdateButton(Model model, @RequestParam Map<String, String> allRequestParams,
+                                          @ModelAttribute("number_of_rows") int numberOfRows) {
         prepareProductsModel(model, allRequestParams);
         return "products";
     }
@@ -52,11 +52,14 @@ public class ProductController {
     }
 
     @PostMapping("/delete_product/{id}")
-    public String deleteProduct(@PathVariable Long id) {
+    public String deleteProduct(@PathVariable Long id, Model model,
+                                @RequestParam Map<String, String> allRequestParams) {
         Product product = new Product();
         product.setId(id);
         productDao.delete(product);
-        return "redirect:/products";
+
+        prepareProductsModel(model, allRequestParams);
+        return "products";
     }
 
     @GetMapping("/update_product/{id}")
@@ -96,7 +99,6 @@ public class ProductController {
     private void prepareProductsModel(Model model, Map<String, String> allRequestParams) {
         List<Product> products = productDao.findAll();
         ProductPage productPage = new ProductPage(products);
-        productPage.setElements(products);
 
         String numberOfRows = allRequestParams.get("number_of_rows");
         if(numberOfRows != null) {

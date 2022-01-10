@@ -44,17 +44,22 @@
                     </tr>
                     </thead>
                     <tbody>
-                    <tr th:each="prod : ${productPage.getCurrentPageElements()}">
-                        <td th:text="${prod.getId()}"></td>
-                        <td th:text="${prod.getProductName()}"></td>
-                        <td th:text="${prod.getPrice()}"></td>
+                    <tr th:each="product : ${productPage.getCurrentPageElements()}">
+                        <td th:text="${product.getId()}"></td>
+                        <td th:text="${product.getProductName()}"></td>
+                        <td th:text="${product.getPrice()}"></td>
                         <td>
-                            <form th:action="${'/products/delete_product/' + prod.getId()}" method="post">
+                            <form th:action="@{/products/delete_product/{id}(
+                            id=${product.getId()},
+                            number_of_rows=${productPage.getNumberOfRows()},
+                               page_number=${productPage.getPageNumber()},
+                               sorting=${sorting},
+                               asc=${asc})}" method="post">
                                 <button type="submit" class="btn btn-link">Удалить</button>
                             </form>
                         </td>
                         <td>
-                            <form th:action="${'/products/update_product/' + prod.getId()}" method="get">
+                            <form th:action="${'/products/update_product/' + product.getId()}" method="get">
                                 <button type="submit" class="btn btn-link">Изменить</button>
                             </form>
                         </td>
@@ -117,10 +122,10 @@
             </div>
             <div class="card-body">
                 <form th:action="@{/products/create_product(
-                number_of_rows=${productPage.getNumberOfRows()},
+                number_of_rows=${productPage.getNumberOfRows()}
                 )}" method="post"
                       th:object="${product}">
-                    <div class="create_product_form">
+                    <div class="create_form">
                         <div class="labels">
                             <label> Наименование: </label>
                             <label> Цена: </label>
@@ -128,7 +133,7 @@
                         <div class="inputs">
                             <input name="productName" type="text">
                             <input name="price" type="text">
-                            <button type="submit" class="btn btn-primary btn-sm create_product_button">Добавить товар
+                            <button type="submit" class="btn btn-primary btn-sm create_button">Добавить товар
                             </button>
                         </div>
                     </div>

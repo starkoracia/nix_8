@@ -38,7 +38,10 @@ public class Page<T> {
 
     public List<Integer> getPagesNumbers() {
         List<Integer> pagesNumbers = new ArrayList<>();
-        int numberOfPages = getTotalRows() / numberOfRows + 1;
+        int numberOfPages = getTotalRows() / numberOfRows;
+        if(getTotalRows() % numberOfRows != 0) {
+            numberOfPages += 1;
+        }
         for (int i = 0; i < numberOfPages; i++) {
             pagesNumbers.add(i + 1);
         }

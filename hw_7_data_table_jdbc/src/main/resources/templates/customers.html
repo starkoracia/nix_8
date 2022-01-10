@@ -9,7 +9,143 @@
 <body>
 
 <div layout:fragment="content">
-    <p th:text="${customer.getId() + ' ' + customer.getFirstName() + ' ' + customer.getPhoneNumber()}"
+
+    <div class="container table-wrap">
+        <div class="card">
+            <div class="card-header">
+                <h4>Клиенты</h4>
+            </div>
+            <div class="card-body">
+                <table class="table table-hover table-bordered">
+                    <thead class="table-light">
+                    <tr>
+                        <th>#</th>
+                        <th>
+                            <div class="sort-th">ФИО
+                                <a class="sort-a" th:href="@{/customers(
+                            number_of_rows=${customerPage.getNumberOfRows()},
+                            sorting=${'fullName'},
+                            asc=${asc != null ? !asc : true})}">
+                                    <img class="sort-image" src="/images/icons/sort.png">
+                                </a>
+                            </div>
+                        </th>
+                        <th>
+                            <div class="sort-th">Номер телефона
+                                <a class="sort-a" th:href="@{/customers(
+                            number_of_rows=${customerPage.getNumberOfRows()},
+                            sorting=${'phoneNumber'},
+                            asc=${asc != null ? !asc : true})}">
+                                    <img class="sort-image" src="/images/icons/sort.png">
+                                </a>
+                            </div>
+                        </th>
+                        <th></th>
+                        <th></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="customer : ${customerPage.getCurrentPageElements()}">
+                        <td th:text="${customer.getId()}"></td>
+                        <td th:text="${customer.getFirstName() + ' ' + customer.getLastName()}"></td>
+                        <td th:text="${customer.getPhoneNumber()}"></td>
+                        <td>
+                            <form th:action="@{/customers/delete_customer/{id}(
+                            id=${customer.getId()},
+                               number_of_rows=${customerPage.getNumberOfRows()},
+                               page_number=${customerPage.getPageNumber()},
+                               sorting=${sorting},
+                               asc=${asc})}" method="post">
+                                <button type="submit" class="btn btn-link">Удалить</button>
+                            </form>
+                        </td>
+                        <td>
+                            <form th:action="${'/customers/update_customer/' + customer.getId()}" method="get">
+                                <button type="submit" class="btn btn-link">Изменить</button>
+                            </form>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+            <form th:action="@{/customers(
+                               sorting=${sorting},
+                               asc=${asc})}" method="post">
+                <nav class="container nav-pages-pagination">
+                    <label id="total-rows-label">Всего строк: [[${customerPage.getTotalRows()}]]</label>
+                    <label id="numbers-of-rows-label">Количество строк: </label>
+                    <select name="number_of_rows" id="page-number-select"
+                            class="form-select form-select-sm page-number-select">
+                        <option th:selected="${customerPage.getNumberOfRows() <= 5}"
+                                value="5">5
+                        </option>
+                        <option th:selected="${customerPage.getNumberOfRows() > 5 && customerPage.getNumberOfRows() <= 10}"
+                                value="10">10
+                        </option>
+                        <option th:selected="${customerPage.getNumberOfRows() > 24}" value="25">25</option>
+                    </select>
+                    <button type="submit" class="btn btn-link reload-button">Обновить</button>
+                    <ul class="pagination">
+                        <li th:class="${'page-item ' + (customerPage.getPageNumber() - 1 < 1 ? 'disabled' : '')}">
+                            <a class="page-link" th:href="@{/customers(
+                               number_of_rows=${customerPage.getNumberOfRows()},
+                               page_number=${customerPage.getPageNumber() - 1},
+                               sorting=${sorting},
+                               asc=${asc})}">Previous</a>
+                        </li>
+                        <li th:each="pageNumber : ${customerPage.getPagesNumbers()}"
+                            th:class="${'page-item ' + (customerPage.getPageNumber() == pageNumber ? 'disabled' : '')}">
+                            <a class="page-link"
+                               th:href="@{/customers(
+                               number_of_rows=${customerPage.getNumberOfRows()},
+                               page_number=${pageNumber},
+                               sorting=${sorting},
+                               asc=${asc})}"
+                               th:text="${pageNumber}"></a>
+                        </li>
+                        <li th:class="${'page-item ' + (customerPage.getPageNumber() + 1 > customerPage.getPagesNumbers().size() ? 'disabled' : '')}">
+                            <a class="page-link"
+                               th:href="@{/customers(
+                               number_of_rows=${customerPage.getNumberOfRows()},
+                               page_number=${customerPage.getPageNumber() + 1},
+                               sorting=${sorting},
+                               asc=${asc})}">Next</a>
+                        </li>
+                    </ul>
+                </nav>
+            </form>
+        </div>
+    </div>
+    <div class="container">
+        <div class="card">
+            <div class="card-header">
+                <h4>Добаление нового клиента:</h4>
+            </div>
+            <div class="card-body">
+                <form th:action="@{/customers/create_customer(
+                number_of_rows=${customerPage.getNumberOfRows()}
+                )}" method="post"
+                      th:object="${customer}">
+                    <div class="create_form">
+                        <div class="labels">
+                            <label> Имя: </label>
+                            <label> Фамилия: </label>
+                            <label> Телефон: </label>
+                        </div>
+                        <div class="inputs">
+                            <input name="firstName" type="text">
+                            <input name="lastName" type="text">
+                            <input name="phoneNumber" type="text">
+                            <button type="submit" class="btn btn-primary btn-sm create_button">Добавить клиента
+                            </button>
+                        </div>
+                    </div>
+                </form>
+                <div th:if="${errorMessage}" th:utext="${errorMessage}" style="color:red;font-style:italic;"></div>
+            </div>
+        </div>
+    </div>
+
 </div>
 
 </body>

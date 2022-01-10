@@ -24,4 +24,9 @@ public class Customer extends BaseEntity {
         this.lastName = lastName;
         this.phoneNumber = phoneNumber;
     }
+
+    public String getFullName() {
+        return String.format("%s %s", firstName, lastName);
+    }
+
 }
