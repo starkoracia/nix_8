@@ -5,10 +5,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import ua.com.alevel.persistence.dao.impl.CustomerDao;
 import ua.com.alevel.persistence.entity.Customer;
-import ua.com.alevel.persistence.entity.Product;
-import ua.com.alevel.util.CustomerPage;
+import ua.com.alevel.util.page.CustomerPage;
 
-import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 
@@ -38,7 +36,7 @@ public class CustomerController {
 
     @PostMapping("/create_customer")
     public String createCustomer(@ModelAttribute Customer customer, Model model,
-                                @RequestParam Map<String, String> allRequestParams) {
+                                 @RequestParam Map<String, String> allRequestParams) {
         if (customer.getFirstName().length() > 0 && customer.getPhoneNumber() != null
                 && customer.getPhoneNumber().length() > 0) {
 
@@ -50,9 +48,42 @@ public class CustomerController {
         return "customers";
     }
 
+    @GetMapping("/update_customer/{id}")
+    public String redirectToUpdateCustomerPage(@PathVariable Long id, Model model) {
+        prepareUpdateCustomerModel(model, id);
+        return "update_customer";
+    }
+
+    @PostMapping("/update_customer/{id}")
+    public String updateCustomer(@PathVariable Long id, Model model,
+                                 @RequestParam Map<String, String> allRequestParams) {
+        String firstName = allRequestParams.get("firstName");
+        String lastName = allRequestParams.get("lastName");
+        String phoneNumber = allRequestParams.get("phoneNumber");
+
+        if (firstName != null && firstName.length() > 0
+        && phoneNumber != null && phoneNumber.length() > 0
+        && lastName != null) {
+            Customer customer = new Customer(firstName, lastName, phoneNumber);
+            customer.setId(id);
+            customerDao.update(customer);
+            return "redirect:/customers";
+        }
+
+        model.addAttribute("errorMessage", errorMessage);
+        prepareUpdateCustomerModel(model, id);
+        return "update_customer";
+    }
+
+    private void prepareUpdateCustomerModel(Model model, Long id) {
+        Customer customer = customerDao.findById(id);
+        model.addAttribute("customer", customer);
+    }
+
     @PostMapping("/delete_customer/{id}")
     public String deleteCustomer(@PathVariable Long id,
                                  Model model, @RequestParam Map<String, String> allRequestParams) {
+
         Customer customer = new Customer();
         customer.setId(id);
         customerDao.delete(customer);

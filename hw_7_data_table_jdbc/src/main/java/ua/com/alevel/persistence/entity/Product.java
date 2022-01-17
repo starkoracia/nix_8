@@ -25,8 +25,7 @@ public class Product extends BaseEntity {
     @ManyToMany(mappedBy = "products")
     private List<Order> orders = new ArrayList<>();
 
-    public Product(Long id, String productName, BigDecimal price) {
-        this.id = id;
+    public Product(String productName, BigDecimal price) {
         this.productName = productName;
         this.price = price;
     }

@@ -1,0 +1,156 @@
+<!doctype html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.w3.org/1999/xhtml"
+      layout:decorate="~{layouts/layout}">
+<head>
+    <link th:href="@{/css/orders.css}" rel="stylesheet"/>
+</head>
+<body>
+
+<div layout:fragment="content">
+
+    <div class="container table-wrap">
+        <div class="card">
+            <div class="card-header">
+                <h4>Изменение заказа</h4>
+            </div>
+            <div class="card-body">
+                <table class="table table-hover table-bordered">
+                    <thead class="table-light">
+                    <tr>
+                        <th>#</th>
+                        <th>
+                            <div class="sort-th">Имя клиента
+                                <img class="sort-image" src="/images/icons/sort.png">
+                                </a>
+                            </div>
+                        </th>
+                        <th>
+                            <div class="sort-th">Список товаров
+
+                            </div>
+                        </th>
+                        <th></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td th:text="${order.getId()}"></td>
+                        <td th:text="${order.getCustomer().getFirstName() + ' ' + order.getCustomer().getLastName()}"></td>
+                        <td>
+                            <form th:action="@{/orders/{id}/products(
+                            id=${order.getId()})}" method="post">
+                                <button type="submit" class="btn btn-link">Товары</button>
+                            </form>
+                        </td>
+                        <td>
+                            <form th:action="@{/orders/delete_order/{id}(
+                            id=${order.getId()})}" method="post">
+                                <button type="submit" class="btn btn-link">Удалить</button>
+                            </form>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="card">
+            <div class="card-header">
+                <h4>Изменение заказа:</h4>
+            </div>
+            <div class="card-body">
+                <div th:if="${errorMessage}" th:utext="${errorMessage}" style="color:red;font-style:italic;"></div>
+                <form th:action="@{/orders/update_order/{id}(
+                id=${order.getId()}
+                )}" method="post"
+                      th:object="${order}">
+                    <div class="create_form">
+                        <div class="labels">
+                            <label> Клиент: </label>
+                            <label> Товары: </label>
+                        </div>
+                        <div class="inputs">
+                            <select name="customer" class="form-select" aria-label="Default select example">
+                                <option selected>Выберите клиента</option>
+                                <option th:each="customer : ${customers}"
+                                        th:value="${customer.getId()}"
+                                        th:text="${customer.getFullName() + ' ' + customer.getPhoneNumber()}"
+                                        th:selected="${customer.getId() == order.getCustomer().getId()}"
+                                ></option>
+                            </select>
+                            <dl class="dropdown">
+                                <dt>
+                                    <a href="#">
+                                        <span class="hida">Товары</span>
+                                        <p class="multiSel"></p>
+                                    </a>
+                                </dt>
+
+                                <dd>
+                                    <div class="mutliSelect">
+                                        <ul>
+                                            <li th:each="product : ${products}">
+                                                <input type="checkbox"
+                                                       th:value="${product.getId()}"
+                                                       th:text="${product.getProductName()}"
+                                                       th:title="${product.getProductName()}"
+                                                       th:name="${'products'}"
+                                                       th:checked="${order.getProducts().contains(product)}"/>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </dd>
+                            </dl>
+                            <button type="submit" class="btn btn-primary btn-sm create_button">Изменить                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+
+    <script type="text/javascript">
+
+        $(".dropdown dt a").on('click', function () {
+            $(".dropdown dd ul").slideToggle('fast');
+        });
+
+        $(".dropdown dd ul li a").on('click', function () {
+            $(".dropdown dd ul").hide();
+        });
+
+        function getSelectedValue(id) {
+            return $("#" + id).find("dt a span.value").html();
+        }
+
+        $(document).bind('click', function (e) {
+            var $clicked = $(e.target);
+            if (!$clicked.parents().hasClass("dropdown")) $(".dropdown dd ul").hide();
+        });
+
+        $('.mutliSelect input[type="checkbox"]').on('click', function () {
+
+            var title = $(this).closest('.mutliSelect').find('input[type="checkbox"]').attr("title"),
+                title = $(this).attr("title") + ",";
+
+            if ($(this).is(':checked')) {
+                var html = '<span title="' + title + '">' + title + '</span>';
+                $('.multiSel').append(html);
+                $(".hida").hide();
+            } else {
+                $('span[title="' + title + '"]').remove();
+                var ret = $(".hida");
+                $('.dropdown dt a').append(ret);
+            }
+        });
+
+    </script>
+</div>
+
+</body>
+</html>

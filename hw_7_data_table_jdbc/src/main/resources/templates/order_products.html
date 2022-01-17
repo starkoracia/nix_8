@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.w3.org/1999/xhtml"
+      layout:decorate="~{layouts/layout}">
+<head>
+    <link th:href="@{/css/products.css}" rel="stylesheet"/>
+</head>
+<body>
+
+<div layout:fragment="content">
+    <div class="container table-wrap">
+        <div class="card">
+            <div class="card-header">
+                <h4>Товары</h4>
+            </div>
+            <div class="card-body">
+                <table class="table table-hover table-bordered">
+                    <thead class="table-light">
+                    <tr>
+                        <th>#</th>
+                        <th>
+                            <div class="sort-th">Наименование
+                                <a class="sort-a" th:href="@{/orders/{id}/products(
+                                id=${orderId},
+                            number_of_rows=${productPage.getNumberOfRows()},
+                            sorting=${'productName'},
+                            asc=${asc != null ? !asc : true})}">
+                                    <img class="sort-image" src="/images/icons/sort.png">
+                                </a>
+                            </div>
+                        </th>
+                        <th>
+                            <div class="sort-th">Цена
+                                <a class="sort-a" th:href="@{/orders/{id}/products(
+                                id=${orderId},
+                            number_of_rows=${productPage.getNumberOfRows()},
+                            sorting=${'price'},
+                            asc=${asc != null ? !asc : true})}">
+                                    <img class="sort-image" src="/images/icons/sort.png">
+                                </a>
+                            </div>
+                        </th>
+                        <th></th>
+                        <th></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="product : ${productPage.getCurrentPageElements()}">
+                        <td th:text="${product.getId()}"></td>
+                        <td th:text="${product.getProductName()}"></td>
+                        <td th:text="${product.getPrice()}"></td>
+                        <td>
+                            <form th:action="@{/products/delete_product/{id}(
+                            id=${product.getId()},
+                            number_of_rows=${productPage.getNumberOfRows()},
+                               page_number=${productPage.getPageNumber()},
+                               sorting=${sorting},
+                               asc=${asc})}" method="post">
+                                <button type="submit" class="btn btn-link">Удалить</button>
+                            </form>
+                        </td>
+                        <td>
+                            <form th:action="${'/products/update_product/' + product.getId()}" method="get">
+                                <button type="submit" class="btn btn-link">Изменить</button>
+                            </form>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+            <form th:action="@{/orders/{id}/products(
+                                id=${orderId},
+                               sorting=${sorting},
+                               asc=${asc})}" method="post">
+                <nav class="container nav-pages-pagination">
+                    <label id="total-rows-label">Всего строк: [[${productPage.getTotalRows()}]]</label>
+                    <label id="numbers-of-rows-label">Количество строк: </label>
+                    <select name="number_of_rows" id="page-number-select"
+                            class="form-select form-select-sm page-number-select">
+                        <option th:selected="${productPage.getNumberOfRows() <= 5}"
+                                value="5">5
+                        </option>
+                        <option th:selected="${productPage.getNumberOfRows() > 5 && productPage.getNumberOfRows() <= 10}"
+                                value="10">10
+                        </option>
+                        <option th:selected="${productPage.getNumberOfRows() > 24}" value="25">25</option>
+                    </select>
+                    <button type="submit" class="btn btn-link reload-button">Обновить</button>
+                    <ul class="pagination">
+                        <li th:class="${'page-item ' + (productPage.getPageNumber() - 1 < 1 ? 'disabled' : '')}">
+                            <a class="page-link" th:href="@{/orders/{id}/products(
+                                id=${orderId},
+                               number_of_rows=${productPage.getNumberOfRows()},
+                               page_number=${productPage.getPageNumber() - 1},
+                               sorting=${sorting},
+                               asc=${asc})}">Previous</a>
+                        </li>
+                        <li th:each="pageNumber : ${productPage.getPagesNumbers()}"
+                            th:class="${'page-item ' + (productPage.getPageNumber() == pageNumber ? 'disabled' : '')}">
+                            <a class="page-link"
+                               th:href="@{/orders/{id}/products(
+                                id=${orderId},
+                               number_of_rows=${productPage.getNumberOfRows()},
+                               page_number=${pageNumber},
+                               sorting=${sorting},
+                               asc=${asc})}"
+                               th:text="${pageNumber}"></a>
+                        </li>
+                        <li th:class="${'page-item ' + (productPage.getPageNumber() + 1 > productPage.getPagesNumbers().size() ? 'disabled' : '')}">
+                            <a class="page-link"
+                               th:href="@{/orders/{id}/products(
+                                id=${orderId},
+                               number_of_rows=${productPage.getNumberOfRows()},
+                               page_number=${productPage.getPageNumber() + 1},
+                               sorting=${sorting},
+                               asc=${asc})}">Next</a>
+                        </li>
+                    </ul>
+                </nav>
+            </form>
+        </div>
+    </div>
+
+</div>
+
+</body>
+</html>

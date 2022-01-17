@@ -5,7 +5,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import ua.com.alevel.persistence.dao.impl.ProductDao;
 import ua.com.alevel.persistence.entity.Product;
-import ua.com.alevel.util.ProductPage;
+import ua.com.alevel.util.page.ProductPage;
 
 import javax.servlet.http.HttpServletRequest;
 import java.math.BigDecimal;
@@ -30,8 +30,7 @@ public class ProductController {
     }
 
     @PostMapping
-    public String getProductsUpdateButton(Model model, @RequestParam Map<String, String> allRequestParams,
-                                          @ModelAttribute("number_of_rows") int numberOfRows) {
+    public String getProductsUpdateButton(Model model, @RequestParam Map<String, String> allRequestParams) {
         prepareProductsModel(model, allRequestParams);
         return "products";
     }
@@ -81,13 +80,13 @@ public class ProductController {
             } else {
                 price = new BigDecimal(priceString);
             }
-            Product product = new Product(id, productName, price);
+            Product product = new Product(productName, price);
+            product.setId(id);
             productDao.update(product);
             return "redirect:/products";
         }
-        model.addAttribute("errorMessage", errorMessage);
-        prepareUpdateProductModel(model, id);
 
+        prepareUpdateProductModel(model, id);
         return "update_product";
     }
 

@@ -1,4 +1,4 @@
-package ua.com.alevel.config.jpa;
+package ua.com.alevel.config.jdbc;
 
 import lombok.Getter;
 import lombok.Setter;

@@ -1,9 +1,11 @@
 package ua.com.alevel.persistence.dao.impl;
 
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
-import ua.com.alevel.config.jpa.JpaConnector;
+import ua.com.alevel.config.jdbc.JdbcConnector;
 import ua.com.alevel.persistence.dao.DaoCustomer;
 import ua.com.alevel.persistence.entity.Customer;
+import ua.com.alevel.persistence.entity.Order;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -16,10 +18,12 @@ import static ua.com.alevel.persistence.dao.SQLQueryUtil.*;
 @Service
 public class CustomerDao implements DaoCustomer {
 
-    JpaConnector connector;
+    JdbcConnector connector;
+    OrderDao orderDao;
 
-    public CustomerDao(JpaConnector connector) {
+    public CustomerDao(JdbcConnector connector, @Lazy OrderDao orderDao) {
         this.connector = connector;
+        this.orderDao = orderDao;
     }
 
 
@@ -54,10 +58,18 @@ public class CustomerDao implements DaoCustomer {
     public void delete(Customer customer) {
         String deleteQuery = String.format(CUSTOMER_DELETE_SQL_QUERY,
                 customer.getId());
-        try(Statement statement = connector.getConnection().createStatement();) {
+        try (Statement statement = connector.getConnection().createStatement();) {
+            deleteCustomerOrders(customer);
             statement.executeUpdate(deleteQuery);
         } catch (SQLException e) {
             e.printStackTrace();
+        }
+    }
+
+    public void deleteCustomerOrders(Customer customer) {
+        List<Order> ordersFromCustomer = orderDao.getOrdersFromCustomer(customer);
+        for (Order order : ordersFromCustomer) {
+            orderDao.delete(order);
         }
     }
 
@@ -65,9 +77,9 @@ public class CustomerDao implements DaoCustomer {
     public Customer findById(Long id) {
         String findByIdQuery = String.format(CUSTOMER_FIND_BY_ID_SQL_QUERY,
                 id);
-        try(Statement statement = connector.getConnection().createStatement();) {
+        try (Statement statement = connector.getConnection().createStatement();) {
             ResultSet resultSet = statement.executeQuery(findByIdQuery);
-            if(resultSet.next()) {
+            if (resultSet.next()) {
                 Customer customer = new Customer();
                 customer.setId(resultSet.getLong("id"));
                 customer.setFirstName(resultSet.getString("first_name"));
@@ -89,7 +101,7 @@ public class CustomerDao implements DaoCustomer {
     @Override
     public List<Customer> findAll() {
         List<Customer> customerList = new ArrayList<>();
-        try(Statement statement = connector.getConnection().createStatement()) {
+        try (Statement statement = connector.getConnection().createStatement()) {
             ResultSet resultSet = statement.executeQuery(CUSTOMER_FIND_ALL_SQL_QUERY);
             while (resultSet.next()) {
                 Customer customer = new Customer();
@@ -107,10 +119,10 @@ public class CustomerDao implements DaoCustomer {
 
     @Override
     public long count() {
-        try(Statement statement = connector.getConnection().createStatement();) {
+        try (Statement statement = connector.getConnection().createStatement();) {
             ResultSet resultSet = statement.executeQuery(CUSTOMER_COUNT_SQL_QUERY);
-            if(resultSet.next()) {
-               return resultSet.getLong("count");
+            if (resultSet.next()) {
+                return resultSet.getLong("count");
             }
         } catch (SQLException e) {
             e.printStackTrace();

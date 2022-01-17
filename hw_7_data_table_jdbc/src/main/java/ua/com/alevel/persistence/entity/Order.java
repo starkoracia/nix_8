@@ -27,6 +27,10 @@ public class Order extends BaseEntity {
         return products;
     }
 
+    public String getCustomerFullName() {
+        return getCustomer().getFullName();
+    }
+
     public void setProducts(Set<Product> products) {
         this.products = products;
     }

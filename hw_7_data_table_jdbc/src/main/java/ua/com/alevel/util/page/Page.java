@@ -1,4 +1,4 @@
-package ua.com.alevel.util;
+package ua.com.alevel.util.page;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -10,7 +10,7 @@ import java.util.List;
 @Getter
 @Setter
 @NoArgsConstructor
-public class Page<T> {
+public abstract class Page<T> {
 
     public Page(List<T> elements) {
         this.elements = elements;
@@ -57,6 +57,8 @@ public class Page<T> {
         }
         return currentPageElements;
     }
+
+    public abstract void sort(String sortField, boolean asc);
 
     public Integer getTotalRows() {
         return elements.size();

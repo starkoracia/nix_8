@@ -1,4 +1,4 @@
-package ua.com.alevel.util;
+package ua.com.alevel.util.page;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -17,6 +17,7 @@ public class ProductPage extends Page<Product> {
         super(elements);
     }
 
+    @Override
     public void sort(String sortField, boolean asc) {
         if (sortField.equals("productName")) {
             if(asc) {

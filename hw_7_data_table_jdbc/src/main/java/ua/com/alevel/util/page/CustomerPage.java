@@ -1,10 +1,9 @@
-package ua.com.alevel.util;
+package ua.com.alevel.util.page;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import ua.com.alevel.persistence.entity.Customer;
-import ua.com.alevel.persistence.entity.Product;
 
 import java.util.Comparator;
 import java.util.List;
@@ -18,6 +17,7 @@ public class CustomerPage extends Page<Customer> {
         super(elements);
     }
 
+    @Override
     public void sort(String sortField, boolean asc) {
 
         if (sortField.equals("fullName")) {

@@ -1,7 +1,7 @@
 package ua.com.alevel.persistence.dao.impl;
 
 import org.springframework.stereotype.Service;
-import ua.com.alevel.config.jpa.JpaConnector;
+import ua.com.alevel.config.jdbc.JdbcConnector;
 import ua.com.alevel.persistence.dao.DaoProduct;
 import ua.com.alevel.persistence.entity.Product;
 
@@ -16,9 +16,9 @@ import static ua.com.alevel.persistence.dao.SQLQueryUtil.*;
 @Service
 public class ProductDao implements DaoProduct {
 
-    JpaConnector connector;
+    JdbcConnector connector;
 
-    public ProductDao(JpaConnector connector) {
+    public ProductDao(JdbcConnector connector) {
         this.connector = connector;
     }
 
@@ -52,6 +52,7 @@ public class ProductDao implements DaoProduct {
         String deleteQuery = String.format(PRODUCT_DELETE_SQL_QUERY,
                 product.getId());
         try (Statement statement = connector.getConnection().createStatement()) {
+            deleteProductFromOrderProductTable(product);
             statement.executeUpdate(deleteQuery);
         } catch (SQLException e) {
             e.printStackTrace();
@@ -65,16 +66,31 @@ public class ProductDao implements DaoProduct {
         try (Statement statement = connector.getConnection().createStatement()) {
             ResultSet resultSet = statement.executeQuery(findByIdQuery);
             if (resultSet.next()) {
-                Product product = new Product();
-                product.setId(resultSet.getLong("id"));
-                product.setProductName(resultSet.getString("product_name"));
-                product.setPrice(resultSet.getBigDecimal("price"));
+                Product product = createProductFromResultSet(resultSet);
                 return product;
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
         return null;
+    }
+
+    private void deleteProductFromOrderProductTable(Product product) {
+        String deleteProductOrderQuery = String.format(PRODUCT_ORDER_DELETE_SQL_QUERY,
+                product.getId());
+        try (Statement statement = connector.getConnection().createStatement()) {
+            statement.executeUpdate(deleteProductOrderQuery);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private Product createProductFromResultSet(ResultSet resultSet) throws SQLException {
+        Product product = new Product();
+        product.setId(resultSet.getLong("id"));
+        product.setProductName(resultSet.getString("product_name"));
+        product.setPrice(resultSet.getBigDecimal("price"));
+        return product;
     }
 
     @Override
@@ -88,10 +104,7 @@ public class ProductDao implements DaoProduct {
         try (Statement statement = connector.getConnection().createStatement()) {
             ResultSet resultSet = statement.executeQuery(PRODUCT_FIND_ALL_SQL_QUERY);
             while (resultSet.next()) {
-                Product product = new Product();
-                product.setId(resultSet.getLong("id"));
-                product.setProductName(resultSet.getString("product_name"));
-                product.setPrice(resultSet.getBigDecimal("price"));
+                Product product = createProductFromResultSet(resultSet);
                 productsList.add(product);
             }
         } catch (SQLException e) {

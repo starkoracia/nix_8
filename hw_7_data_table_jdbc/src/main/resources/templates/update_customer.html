@@ -4,7 +4,7 @@
       xmlns:layout="http://www.w3.org/1999/xhtml"
       layout:decorate="~{layouts/layout}">
 <head>
-    <link th:href="@{/css/products.css}" rel="stylesheet"/>
+    <link th:href="@{/css/customers.css}" rel="stylesheet"/>
 </head>
 <body>
 
@@ -12,25 +12,26 @@
     <div class="container table-wrap">
         <div class="card">
             <div class="card-header">
-                <h4>Изменение товара:</h4>
+                <h4>Изменение данных клиента:</h4>
             </div>
             <div class="card-body">
                 <table class="table table-hover table-bordered">
                     <thead class="table-light">
                     <tr>
                         <th>#</th>
-                        <th>Наименование</th>
-                        <th>Цена</th>
+                        <th>ФИО</th>
+                        <th>Номер телефона</th>
                         <th></th>
                     </tr>
                     </thead>
                     <tbody>
                     <tr>
-                        <td th:text="${productToUpdate.getId()}"></td>
-                        <td th:text="${productToUpdate.getProductName()}"></td>
-                        <td th:text="${productToUpdate.getPrice()}"></td>
+                        <td th:text="${customer.getId()}"></td>
+                        <td th:text="${customer.getFirstName() + ' ' + customer.getLastName()}"></td>
+                        <td th:text="${customer.getPhoneNumber()}"></td>
                         <td>
-                            <form th:action="${'/products/delete_product/' + productToUpdate.getId()}" method="post">
+                            <form th:action="@{/customers/delete_customer/{id}(
+                            id=${customer.getId()})}" method="post">
                                 <button type="submit" class="btn btn-link">Удалить</button>
                             </form>
                         </td>
@@ -43,18 +44,23 @@
     <div class="container">
         <div class="card">
             <div class="card-header">
-                <h4>Изменение данных товара:</h4>
+                <h4>Изменение данных клиента:</h4>
             </div>
             <div class="card-body">
-                <form th:action="${'/products/update_product/' + productToUpdate.getId()}" method="post">
+                <form th:action="@{/customers/update_customer/{id}(
+                id=${customer.getId()}
+                )}" method="post"
+                      th:object="${customer}">
                     <div class="create_form">
                         <div class="labels">
-                            <label> Наименование: </label>
-                            <label> Цена: </label>
+                            <label> Имя: </label>
+                            <label> Фамилия: </label>
+                            <label> Телефон: </label>
                         </div>
                         <div class="inputs">
-                            <input name="productName" type="text" th:value="${productToUpdate.getProductName()}">
-                            <input name="price" type="text" th:value="${productToUpdate.getPrice()}">
+                            <input name="firstName" type="text" th:value="${customer.getFirstName()}">
+                            <input name="lastName" type="text" th:value="${customer.getLastName()}">
+                            <input name="phoneNumber" type="text" th:value="${customer.getPhoneNumber()}">
                             <button type="submit" class="btn btn-primary btn-sm update_button">Изменить товар
                             </button>
                         </div>
