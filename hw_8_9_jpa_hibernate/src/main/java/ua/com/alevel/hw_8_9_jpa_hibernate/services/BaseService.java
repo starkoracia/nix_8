@@ -1,4 +1,4 @@
-package ua.com.alevel.hw_8_9_jpa_hibernate.dao;
+package ua.com.alevel.hw_8_9_jpa_hibernate.services;
 
 import ua.com.alevel.hw_8_9_jpa_hibernate.dto.PageDataRequest;
 import ua.com.alevel.hw_8_9_jpa_hibernate.entities.BaseEntity;
@@ -6,7 +6,7 @@ import ua.com.alevel.hw_8_9_jpa_hibernate.entities.BaseEntity;
 import java.util.List;
 import java.util.Optional;
 
-public interface BaseDao<ENTITY extends BaseEntity> {
+public interface BaseService<ENTITY extends BaseEntity> {
 
     Boolean create(ENTITY entity);
     void update(ENTITY entity);
@@ -17,4 +17,5 @@ public interface BaseDao<ENTITY extends BaseEntity> {
     List<ENTITY> findAllFromRequest(PageDataRequest request);
     Long countNumberOfSearchMatches(PageDataRequest request);
     Long count();
+
 }

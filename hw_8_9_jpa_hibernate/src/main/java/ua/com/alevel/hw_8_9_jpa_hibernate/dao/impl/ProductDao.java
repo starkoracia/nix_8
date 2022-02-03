@@ -5,13 +5,11 @@ import org.springframework.transaction.annotation.Transactional;
 import ua.com.alevel.hw_8_9_jpa_hibernate.dao.BaseDao;
 import ua.com.alevel.hw_8_9_jpa_hibernate.dto.PageDataRequest;
 import ua.com.alevel.hw_8_9_jpa_hibernate.entities.Product;
+import ua.com.alevel.hw_8_9_jpa_hibernate.entities.Product_;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
+import javax.persistence.criteria.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -27,8 +25,12 @@ public class ProductDao implements BaseDao<Product> {
     }
 
     @Override
-    public void create(Product product) {
+    public Boolean create(Product product) {
         entityManager.persist(product);
+        if (product.getId() != null) {
+            return true;
+        }
+        return false;
     }
 
     @Override
@@ -71,19 +73,28 @@ public class ProductDao implements BaseDao<Product> {
         int limitAmount = request.getNumberOfElementsOnPage();
         int limitFrom = (request.getPageNumber() - 1) * limitAmount;
         String sortBy = request.getSortBy();
-        String ascDesc = request.getIsSortAsc() ? "asc" : "desc";
+        Boolean isSortAsc = request.getIsSortAsc();
         String search = "%" + request.getSearchString() + "%";
 
         CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
         CriteriaQuery<Product> productCriteria = criteriaBuilder.createQuery(Product.class);
         Root<Product> productRoot = productCriteria.from(Product.class);
 
-        List<Predicate> predicates = new ArrayList<>();
+        Predicate searchPredicate = createSearchPredicate(search, criteriaBuilder, productRoot);
+        Order order = criteriaBuilder.asc(productRoot.get("id"));
 
+        if(sortBy.equals("productName") || sortBy.equals("id") || sortBy.equals("price")) {
+            if(isSortAsc) {
+                order = criteriaBuilder.asc(productRoot.get(sortBy));
+            } else {
+                order = criteriaBuilder.desc(productRoot.get(sortBy));
+            }
+        }
 
-//        predicates.add(criteriaBuilder.like(productRoot.get("id"), search));
-
-        productCriteria.select(productRoot);
+        productCriteria
+                .select(productRoot)
+                .where(searchPredicate)
+                .orderBy(order);
 
         List<Product> productList = entityManager
                 .createQuery(productCriteria)
@@ -94,8 +105,40 @@ public class ProductDao implements BaseDao<Product> {
         return productList;
     }
 
+
+    public Long countNumberOfSearchMatches(PageDataRequest request) {
+        String search = "%" + request.getSearchString() + "%";
+
+        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+        CriteriaQuery<Long> countCriteria = criteriaBuilder.createQuery(Long.class);
+        Root<Product> productRoot = countCriteria.from(Product.class);
+
+        Predicate searchPredicate = createSearchPredicate(search, criteriaBuilder, productRoot);
+
+        countCriteria
+                .select(criteriaBuilder.count(productRoot))
+                .where(searchPredicate);
+
+        Long count = entityManager
+                .createQuery(countCriteria)
+                .getSingleResult();
+
+        return count;
+    }
+
+
+    private Predicate createSearchPredicate(String search, CriteriaBuilder criteriaBuilder, Root<Product> productRoot) {
+        List<Predicate> predicates = new ArrayList<>();
+
+        predicates.add(criteriaBuilder.like(productRoot.get(Product_.id).as(String.class), search));
+        predicates.add(criteriaBuilder.like(productRoot.get(Product_.price).as(String.class), search));
+        predicates.add(criteriaBuilder.like(productRoot.get(Product_.productName).as(String.class), search));
+
+        return criteriaBuilder.or(predicates.toArray(Predicate[]::new));
+    }
+
     @Override
-    public long count() {
+    public Long count() {
         return (long) entityManager.createQuery("select count(p) from Product p").getSingleResult();
     }
 

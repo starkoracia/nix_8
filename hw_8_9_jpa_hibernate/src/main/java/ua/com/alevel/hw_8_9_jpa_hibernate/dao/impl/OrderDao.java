@@ -21,8 +21,12 @@ public class OrderDao implements BaseDao<Order> {
     }
 
     @Override
-    public void create(Order order) {
+    public Boolean create(Order order) {
         entityManager.persist(order);
+        if(order.getId() != null) {
+            return true;
+        }
+        return false;
     }
 
     @Override
@@ -66,7 +70,12 @@ public class OrderDao implements BaseDao<Order> {
     }
 
     @Override
-    public long count() {
+    public Long countNumberOfSearchMatches(PageDataRequest request) {
+        return null;
+    }
+
+    @Override
+    public Long count() {
         return (long) entityManager
                 .createQuery("select count(order) from Order order")
                 .getSingleResult();
