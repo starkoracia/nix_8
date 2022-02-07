@@ -4,7 +4,6 @@ import org.springframework.stereotype.Service;
 import ua.com.alevel.hw_8_9_jpa_hibernate.dto.PageDataRequest;
 import ua.com.alevel.hw_8_9_jpa_hibernate.dto.PageDataResponse;
 import ua.com.alevel.hw_8_9_jpa_hibernate.dto.entities.CustomerDto;
-import ua.com.alevel.hw_8_9_jpa_hibernate.dto.entities.ProductDto;
 import ua.com.alevel.hw_8_9_jpa_hibernate.entities.Customer;
 import ua.com.alevel.hw_8_9_jpa_hibernate.facade.BaseFacade;
 import ua.com.alevel.hw_8_9_jpa_hibernate.services.impl.CustomerService;

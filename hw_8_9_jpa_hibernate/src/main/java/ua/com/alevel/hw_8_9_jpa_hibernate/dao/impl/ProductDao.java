@@ -1,9 +1,12 @@
 package ua.com.alevel.hw_8_9_jpa_hibernate.dao.impl;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 import ua.com.alevel.hw_8_9_jpa_hibernate.dao.BaseDao;
 import ua.com.alevel.hw_8_9_jpa_hibernate.dto.PageDataRequest;
+import ua.com.alevel.hw_8_9_jpa_hibernate.entities.Order;
+import ua.com.alevel.hw_8_9_jpa_hibernate.entities.Order_;
 import ua.com.alevel.hw_8_9_jpa_hibernate.entities.Product;
 import ua.com.alevel.hw_8_9_jpa_hibernate.entities.Product_;
 
@@ -20,6 +23,7 @@ public class ProductDao implements BaseDao<Product> {
 
     private final EntityManager entityManager;
 
+    @Autowired
     public ProductDao(EntityManager entityManager) {
         this.entityManager = entityManager;
     }
@@ -81,7 +85,7 @@ public class ProductDao implements BaseDao<Product> {
         Root<Product> productRoot = productCriteria.from(Product.class);
 
         Predicate searchPredicate = createSearchPredicate(search, criteriaBuilder, productRoot);
-        Order order = criteriaBuilder.asc(productRoot.get("id"));
+        javax.persistence.criteria.Order order = criteriaBuilder.asc(productRoot.get("id"));
 
         if(sortBy.equals("productName") || sortBy.equals("id") || sortBy.equals("price")) {
             if(isSortAsc) {
@@ -105,6 +109,25 @@ public class ProductDao implements BaseDao<Product> {
         return productList;
     }
 
+    public List<Order> findOrdersFromProduct(Product product) {
+        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+        CriteriaQuery<Order> orderCriteria = criteriaBuilder.createQuery(Order.class);
+        Root<Order> orderRoot = orderCriteria.from(Order.class);
+
+        SetJoin<Order, Product> productsJoin = orderRoot.join(Order_.products);
+
+        CriteriaBuilder.In<Product> in = criteriaBuilder.in(productsJoin).value(product);
+
+        orderCriteria
+                .select(orderRoot)
+                .where(in);
+
+        List<Order> resultList = entityManager
+                .createQuery(orderCriteria)
+                .getResultList();
+
+        return resultList;
+    }
 
     public Long countNumberOfSearchMatches(PageDataRequest request) {
         String search = "%" + request.getSearchString() + "%";

@@ -6,6 +6,8 @@ import ua.com.alevel.hw_8_9_jpa_hibernate.dto.PageDataResponse;
 import ua.com.alevel.hw_8_9_jpa_hibernate.dto.entities.ProductDto;
 import ua.com.alevel.hw_8_9_jpa_hibernate.facade.impl.ProductFacade;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/products")
 @CrossOrigin(origins = "http://localhost:3000")
@@ -20,6 +22,11 @@ public class ProductController {
     @PostMapping()
     public PageDataResponse<ProductDto> getProducts(@RequestBody PageDataRequest pageDataRequest) {
         return productFacade.findAllFromRequest(pageDataRequest);
+    }
+
+    @GetMapping()
+    public List<ProductDto> getProducts() {
+        return productFacade.findAll();
     }
 
     @PostMapping("/coincidences")
