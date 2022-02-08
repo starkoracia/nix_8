@@ -5,7 +5,6 @@ import ua.com.alevel.hw_8_9_jpa_hibernate.dto.PageDataRequest;
 import ua.com.alevel.hw_8_9_jpa_hibernate.dto.PageDataResponse;
 import ua.com.alevel.hw_8_9_jpa_hibernate.dto.entities.OrderDto;
 import ua.com.alevel.hw_8_9_jpa_hibernate.dto.entities.ProductDto;
-import ua.com.alevel.hw_8_9_jpa_hibernate.entities.Product;
 import ua.com.alevel.hw_8_9_jpa_hibernate.facade.impl.OrderFacade;
 
 import java.util.List;
