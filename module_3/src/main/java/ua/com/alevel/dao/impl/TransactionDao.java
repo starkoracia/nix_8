@@ -7,6 +7,7 @@ import org.hibernate.query.Query;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 import ua.com.alevel.dao.BaseDao;
+import ua.com.alevel.entities.Account;
 import ua.com.alevel.entities.Transaction;
 
 import java.util.List;
@@ -68,6 +69,13 @@ public class TransactionDao implements BaseDao<Transaction> {
         return transactionList;
     }
 
+    public List<Transaction> getTransactionsFromAccount(Account account) {
+        List<Transaction> transactionList = getSession().createQuery("select tr from Transaction tr where tr.account.id = :id")
+                .setParameter("id", account.getId())
+                .getResultList();
+        return transactionList;
+    }
+
     @Override
     public Long count() {
         Long count = (Long) getSession()
@@ -85,16 +93,6 @@ public class TransactionDao implements BaseDao<Transaction> {
         }
         this.session = session;
         return session;
-    }
-
-    private void closeSession() {
-        try {
-            if (this.session.isOpen()) {
-                this.session.close();
-            }
-        } catch (HibernateException e) {
-            e.printStackTrace();
-        }
     }
 
 }

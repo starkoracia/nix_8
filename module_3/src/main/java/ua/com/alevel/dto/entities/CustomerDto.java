@@ -29,7 +29,6 @@ public class CustomerDto extends BaseDto<Customer> {
         CustomerDto dto = new CustomerDto();
         dto.setId(customer.getId());
         dto.setName(customer.getName());
-        dto.setAccounts(customer.getAccounts());
         return dto;
     }
 

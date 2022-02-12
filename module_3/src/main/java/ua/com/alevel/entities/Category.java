@@ -19,9 +19,6 @@ public class Category extends BaseEntity {
 
     private String name;
 
-    @Column(name = "is_income")
-    private Boolean isIncome;
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

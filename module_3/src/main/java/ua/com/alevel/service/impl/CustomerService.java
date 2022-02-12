@@ -1,12 +1,17 @@
 package ua.com.alevel.service.impl;
 
+import org.springframework.stereotype.Service;
 import ua.com.alevel.dao.impl.CustomerDao;
+import ua.com.alevel.dto.PageDataRequest;
+import ua.com.alevel.entities.Account;
+import ua.com.alevel.entities.Category;
 import ua.com.alevel.entities.Customer;
 import ua.com.alevel.service.ServiceCustomer;
 
 import java.util.List;
 import java.util.Optional;
 
+@Service
 public class CustomerService implements ServiceCustomer {
 
     private final CustomerDao customerDao;
@@ -43,6 +48,22 @@ public class CustomerService implements ServiceCustomer {
     @Override
     public List<Customer> findAll() {
         return customerDao.findAll();
+    }
+
+    public List<Customer> findAllFromRequest(PageDataRequest request) {
+        return customerDao.findAllFromRequest(request);
+    }
+
+    public List<Account> getAccountsFromCustomer(Customer customer) {
+        return customerDao.getAccountsFromCustomer(customer);
+    }
+
+    public Long countNumberOfSearchMatches(PageDataRequest request) {
+        return customerDao.countNumberOfSearchMatches(request);
+    }
+
+    public List<Category> getCategories() {
+        return customerDao.getCategories();
     }
 
     @Override

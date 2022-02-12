@@ -2,14 +2,14 @@ import React, {Component} from 'react';
 import Table from "./Table";
 import axios from "axios";
 import AddProductModalWindow from "./AddProductModalWindow";
+import EditProductModalWindow from "./EditProductModalWindow";
 import HystModal from "hystmodal";
-import AddCustomerModalWindow from "./AddCustomerModalWindow";
-import EditCustomerModalWindow from "./EditCustomerModalWindow";
 import DeleteProductModalWindow from "./DeleteProductModalWindow";
-import DeleteCustomerModalWindow from "./DeleteCustomerModalWindow";
 import Navbar from "./Navbar";
 
-class CustomerTable extends Component {
+
+class ProductTable extends Component {
+
     constructor(props) {
         super(props);
         this.state = {
@@ -21,21 +21,17 @@ class CustomerTable extends Component {
             searchMatches: 0,
             sortField: 'id',
             isAsc: true,
-            customerToEdit: {id: 0, firstName: '', lastName: '', phoneNumber: 0},
-            customerToDelete: {id: 0, firstName: '', lastName: '', phoneNumber: 0},
-            customers: []
+            productToEdit: {id: 0, productName: '', price: 0},
+            productToDelete: {id: 0, productName: '', price: 0},
+            products: []
         }
         this.myModal = new HystModal({
             linkAttributeName: "data-hystmodal",
         });
     }
 
-    componentDidMount() {
-        this.getElements();
-    }
-
     getElements = () => {
-        axios.post('http://localhost:8080/customers', {
+        axios.post('http://localhost:8080/products', {
             numberOfElementsOnPage: this.state.numberOfRows,
             pageNumber: this.state.pageNumber,
             searchString: this.state.searchField,
@@ -43,9 +39,8 @@ class CustomerTable extends Component {
             sortBy: this.state.sortField
         })
             .then((response) => {
-                console.log(response.data);
                 this.setState({
-                        customers: response.data.dtoEntities,
+                        products: response.data.dtoEntities,
                         amountOfElements: response.data.amountOfElements
                     },
                     () => this.countAndSetTheTotalOfPages());
@@ -59,12 +54,11 @@ class CustomerTable extends Component {
     getNumberOfSearchMatches = () => {
         const searchField = this.state.searchField;
         if (searchField !== '') {
-            axios.post('http://localhost:8080/customers/coincidences', {
+            axios.post('http://localhost:8080/products/coincidences', {
                 searchString: searchField
             })
                 .then((response) => {
                     const searchMatches = response.data;
-                    console.log(response.data);
                     this.setState({
                         searchMatches: searchMatches
                     });
@@ -75,12 +69,15 @@ class CustomerTable extends Component {
         } else {
             this.setState({
                 searchMatches: 0
-            }, );
+            }, () => this.getElements());
         }
     }
 
-    createNewCustomer = (customer) => {
-        axios.post('http://localhost:8080/customers/create', customer)
+    createNewProduct = (name, price) => {
+        axios.post('http://localhost:8080/products/create', {
+            productName: name,
+            price: price
+        })
             .then((response) => {
                 if (response.data) {
                     this.props.showMessage('Успешно создан!', 'success')
@@ -96,8 +93,8 @@ class CustomerTable extends Component {
             })
     }
 
-    editCustomer = (customer) => {
-        axios.post('http://localhost:8080/customers/edit', customer)
+    editProduct = (product) => {
+        axios.post('http://localhost:8080/products/edit', product)
             .then((response) => {
                 if (response.data) {
                     this.props.showMessage('Успешно обновлен!', 'success')
@@ -112,8 +109,8 @@ class CustomerTable extends Component {
             })
     }
 
-    deleteCustomer = (customer) => {
-        axios.post('http://localhost:8080/customers/delete', customer)
+    deleteProduct = (product) => {
+        axios.post('http://localhost:8080/products/delete', product)
             .then((response) => {
                 if (response.data) {
                     this.props.showMessage('Успешно удален!', 'success')
@@ -126,46 +123,6 @@ class CustomerTable extends Component {
                 this.props.showMessage('Ошибка удаления!', 'danger')
                 console.log(error);
             })
-    }
-
-    countAndSetTheTotalOfPages = () => {
-        const pages = this.countTheTotalOfPages(this.state.numberOfRows, this.state.amountOfElements);
-        this.setState({totalOfPages: pages});
-    }
-
-    countTheTotalOfPages = (numberOfRows, amountOfElements) => {
-        const amount = amountOfElements;
-        let pages = Math.floor(amount / numberOfRows);
-        if (amount % numberOfRows !== 0) {
-            return pages + 1;
-        }
-        return pages;
-    }
-
-    onChangeSearchField = (event) => {
-        const text = event.target.value;
-        this.setState({searchField: text},
-            () => this.getNumberOfSearchMatches())
-    }
-
-    onChangeNumberOfRowsHandler = (event) => {
-        let newTotalPages = this.countTheTotalOfPages(event.target.value, this.state.amountOfElements);
-        newTotalPages === 0 && (newTotalPages = 1);
-        if (newTotalPages < this.state.pageNumber) {
-            this.setState({
-                pageNumber: newTotalPages,
-                numberOfRows: event.target.value
-            }, () => this.getElements());
-        } else {
-            this.setState({numberOfRows: event.target.value},
-                () => this.getElements());
-        }
-    }
-
-    paginationOnClick = (pageNumber) => {
-        this.setState({pageNumber: pageNumber},
-            () => this.getElements());
-
     }
 
     onSearchSubmit = (event) => {
@@ -185,6 +142,49 @@ class CustomerTable extends Component {
         }
     }
 
+    onChangeSearchField = (event) => {
+        const text = event.target.value;
+        this.setState({searchField: text},
+            () => this.getNumberOfSearchMatches())
+    }
+
+    componentDidMount() {
+        this.getElements();
+    }
+
+    paginationOnClick = (pageNumber) => {
+        this.setState({pageNumber: pageNumber},
+            () => this.getElements());
+
+    }
+
+    onChangeNumberOfRowsHandler = (event) => {
+        const newTotalPages = this.countTheTotalOfPages(event.target.value, this.state.amountOfElements);
+        if (newTotalPages < this.state.pageNumber) {
+            this.setState({
+                pageNumber: newTotalPages,
+                numberOfRows: event.target.value
+            }, () => this.getElements());
+        } else {
+            this.setState({numberOfRows: event.target.value},
+                () => this.getElements());
+        }
+    }
+
+    countAndSetTheTotalOfPages = () => {
+        const pages = this.countTheTotalOfPages(this.state.numberOfRows, this.state.amountOfElements);
+        this.setState({totalOfPages: pages});
+    }
+
+    countTheTotalOfPages = (numberOfRows, amountOfElements) => {
+        const amount = amountOfElements;
+        let pages = Math.floor(amount / numberOfRows);
+        if (amount % numberOfRows !== 0) {
+            return pages + 1;
+        }
+        return pages;
+    }
+
     onClickSortIcon = (sortName, isAsc) => {
         const lastSortField = this.state.sortField;
         let isAscNew = true;
@@ -198,53 +198,47 @@ class CustomerTable extends Component {
             () => this.getElements());
     }
 
+    onSubmitAddNewProduct = (event, n, p) => {
+        this.createNewProduct(n, p);
+    }
+
+    onSubmitEditProduct = () => {
+        this.editProduct(this.state.productToEdit);
+    }
+
+    onSubmitDeleteProduct = () => {
+        this.deleteProduct(this.state.productToDelete);
+    }
+
     onClickAdd = () => {
-        this.myModal.open('#addCustomer');
+        this.myModal.open('#addProduct');
     }
 
-    onClickEdit = (customer) => {
-        this.setState({customerToEdit: customer});
-        this.myModal.open('#editCustomer');
+    onClickEdit = (product) => {
+        this.setState({productToEdit: product});
+        this.myModal.open('#editProduct');
     }
 
-    onClickDelete = (customer) => {
-        this.setState({customerToDelete: customer})
-        this.myModal.open('#deleteCustomer')
+    onClickDelete = (product) => {
+        this.setState({productToDelete: product})
+        this.myModal.open('#deleteProduct')
     }
 
-    onSubmitAddNewCustomer = (customer) => {
-        this.createNewCustomer(customer);
+    onChangeNameInput = (event) => {
+        const name = event.target.value;
+        this.setState({productToEdit: {...this.state.productToEdit, productName: name}});
     }
 
-    onChangeFirstNameInput = (event) => {
-        const firstName = event.target.value;
-        this.setState({customerToEdit: {...this.state.customerToEdit, firstName: firstName}});
-    }
-
-    onChangeLastNameInput = (event) => {
-        const lastName = event.target.value;
-        this.setState({customerToEdit: {...this.state.customerToEdit, lastName: lastName}});
-    }
-
-    onChangePhoneNumberInput = (event) => {
-        const phoneNumber = event.target.value;
-        this.setState({customerToEdit: {...this.state.customerToEdit, phoneNumber: phoneNumber}});
-    }
-
-    onSubmitEditCustomer = () => {
-        this.editCustomer(this.state.customerToEdit);
-    }
-
-    onSubmitDeleteCustomer = () => {
-        this.deleteCustomer(this.state.customerToDelete);
+    onChangePriceInput = (event) => {
+        const price = event.target.value;
+        this.setState({productToEdit: {...this.state.productToEdit, price: price}});
     }
 
     getHeaderFieldNamesMap = () => {
         const headerFieldArray = [
             {headerName: 'Id', fieldName: 'id'},
-            {headerName: 'Имя', fieldName: 'firstName'},
-            {headerName: 'Фамилия', fieldName: 'lastName'},
-            {headerName: 'Телефон', fieldName: 'phoneNumber'}
+            {headerName: 'Наименование', fieldName: 'productName'},
+            {headerName: 'Цена', fieldName: 'price'}
         ]
         const headerFieldMap = new Map();
         headerFieldArray.forEach(headerField => {
@@ -253,86 +247,84 @@ class CustomerTable extends Component {
         return headerFieldMap;
     }
 
-    createRowColumns = (customer, editDeleteDiv) => {
+
+    createRowColumns = (product, editDeleteDiv) => {
         let rowColumns = [];
 
-        let idColumn = <td key={customer.id}> {customer.id}</td>;
+        let idColumn = <td key={product.id}> {product.id}</td>;
         rowColumns.push(idColumn);
-        let firstNameColumn = <td key={customer.firstName}> {customer.firstName}</td>;
-        rowColumns.push(firstNameColumn);
-        let lastNameColumn = <td key={customer.lastName}> {customer.lastName}</td>;
-        rowColumns.push(lastNameColumn);
-        let phoneNumberColumn = <td className={'last-row-column'} key={customer.phoneNumber}> {customer.phoneNumber} {editDeleteDiv()}</td>;
-        rowColumns.push(phoneNumberColumn);
+        let nameColumn = <td key={product.productName}> {product.productName}</td>;
+        rowColumns.push(nameColumn);
+        let priceColumn = <td className={'last-row-column'} key={product.price}> {product.price} {editDeleteDiv()}</td>;
+        rowColumns.push(priceColumn);
 
         return rowColumns;
     }
 
+
     render() {
         const sortField = this.state.sortField;
-        const isAsc = this.state.isAsc;
-        const elements = this.state.customers;
+        const elements = this.state.products;
         const numberOfRows = this.state.numberOfRows;
         const pageNumber = this.state.pageNumber;
         const totalPages = this.state.totalOfPages;
         const amountOfElements = this.state.amountOfElements;
         const searchMatches = this.state.searchMatches;
+        const isAsc = this.state.isAsc;
         const headerFieldNamesMap = this.getHeaderFieldNamesMap();
         const onClickSortIcon = this.onClickSortIcon;
+        const onSubmitAddNewProduct = this.onSubmitAddNewProduct;
         const onClickEdit = this.onClickEdit;
         const onClickDelete = this.onClickDelete;
-        const onSubmitAddNewCustomer = this.onSubmitAddNewCustomer;
+        const onChangeNameInput = this.onChangeNameInput;
+        const onChangePriceInput = this.onChangePriceInput;
+        const onSubmitEditProduct = this.onSubmitEditProduct;
         const myModal = this.myModal;
-        const onChangeFirstNameInput = this.onChangeFirstNameInput;
-        const onChangeLastNameInput = this.onChangeLastNameInput;
-        const onChangePhoneNumberInput = this.onChangePhoneNumberInput;
-        const onSubmitEditCustomer = this.onSubmitEditCustomer;
-        const onSubmitDeleteCustomer = this.onSubmitDeleteCustomer;
+        const onSubmitDeleteProduct = this.onSubmitDeleteProduct;
         return (
             <>
-                <Navbar linkName={'customers'}/>
+                <Navbar linkName={'products'}/>
                 <Table
+                    onClickAdd={this.onClickAdd}
+                    isAsc={isAsc}
+                    sortField={sortField}
+                    searchMatches={searchMatches}
                     onChangeSearchField={this.onChangeSearchField}
+                    amountOfElements={amountOfElements}
+                    totalPages={totalPages}
+                    currentPage={pageNumber}
+                    numberOfRows={numberOfRows}
                     onChangeNumberOfRowsHandler={this.onChangeNumberOfRowsHandler}
                     paginationOnClick={this.paginationOnClick}
                     onSearchSubmit={this.onSearchSubmit}
                     onClickSortIcon={onClickSortIcon}
                     onClickEdit={onClickEdit}
                     onClickDelete={onClickDelete}
-                    headerFieldNamesMap={headerFieldNamesMap}
-                    isAsc={isAsc}
-                    sortField={sortField}
-                    searchMatches={searchMatches}
-                    amountOfElements={amountOfElements}
-                    totalPages={totalPages}
-                    currentPage={pageNumber}
-                    numberOfRows={numberOfRows}
-                    onClickAdd={this.onClickAdd}
-                    tableName={'Клиенты'}
+                    tableName={'Товары'}
                     elements={elements}
+                    headerFieldNamesMap={headerFieldNamesMap}
                     createRowColumns={this.createRowColumns}/>
-                <AddCustomerModalWindow
-                    hystmodalId={'addCustomer'}
+                <AddProductModalWindow
+                    hystmodalId={'addProduct'}
                     windowClassName={'add-edit-window'}
-                    onSubmitAddNewCustomer={onSubmitAddNewCustomer}
+                    onSubmitAddNewProduct={onSubmitAddNewProduct}
                     myModal={myModal}/>
-                <EditCustomerModalWindow
-                    hystmodalId={'editCustomer'}
+                <EditProductModalWindow
+                    hystmodalId={'editProduct'}
                     windowClassName={'add-edit-window'}
-                    customerToEdit={this.state.customerToEdit}
-                    onChangeFirstNameInput={onChangeFirstNameInput}
-                    onChangeLastNameInput={onChangeLastNameInput}
-                    onChangePhoneNumberInput={onChangePhoneNumberInput}
-                    onSubmitEditCustomer={onSubmitEditCustomer}
+                    productToEdit={this.state.productToEdit}
+                    onChangeNameInput={onChangeNameInput}
+                    onChangePriceInput={onChangePriceInput}
+                    onSubmitEditProduct={onSubmitEditProduct}
                     myModal={myModal}/>
-                <DeleteCustomerModalWindow
-                    hystmodalId={'deleteCustomer'}
+                <DeleteProductModalWindow
+                    hystmodalId={'deleteProduct'}
                     windowClassName={'delete-window'}
                     myModal={myModal}
-                    onSubmitDeleteCustomer={onSubmitDeleteCustomer}/>
+                    onSubmitDeleteProduct={onSubmitDeleteProduct}/>
             </>
         );
     }
 }
 
-export default CustomerTable;
+export default ProductTable;

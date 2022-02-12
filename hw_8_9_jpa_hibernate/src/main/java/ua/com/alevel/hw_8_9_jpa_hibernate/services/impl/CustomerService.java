@@ -58,6 +58,7 @@ public class CustomerService implements BaseService<Customer> {
         return customerDao.countNumberOfSearchMatches(request);
     }
 
+
     @Override
     public Long count() {
         return customerDao.count();

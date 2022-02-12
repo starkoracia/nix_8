@@ -1,5 +1,6 @@
 package ua.com.alevel.service.impl;
 
+import org.springframework.stereotype.Service;
 import ua.com.alevel.dao.impl.AccountDao;
 import ua.com.alevel.entities.Account;
 import ua.com.alevel.service.ServiceAccount;
@@ -7,6 +8,7 @@ import ua.com.alevel.service.ServiceAccount;
 import java.util.List;
 import java.util.Optional;
 
+@Service
 public class AccountService implements ServiceAccount {
 
     private final AccountDao accountDao;

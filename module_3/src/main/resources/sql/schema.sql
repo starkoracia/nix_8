@@ -8,7 +8,6 @@ CREATE TABLE if not exists categories
 (
     id        BIGINT AUTO_INCREMENT NOT NULL,
     name      VARCHAR(255)          NULL,
-    is_income BIT(1)                NULL,
     CONSTRAINT pk_categories PRIMARY KEY (id)
 );
 
