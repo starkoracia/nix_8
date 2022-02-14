@@ -1,0 +1,254 @@
+.table-wrap {
+    margin-top: 30px;
+    margin-bottom: 20px;
+    justify-content: flex-end;
+}
+
+.pagination {
+    justify-content: flex-end;
+    margin-bottom: 0;
+}
+
+.table-footer {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+    align-items: end;
+}
+
+#number-of-rows-select {
+    width: fit-content;
+    height: fit-content;
+    margin: 0 10px;
+
+}
+
+#number-of-rows-label {
+    padding-bottom: 4px;
+}
+
+#number-of-rows-div {
+    display: flex;
+    flex-direction: row;
+    justify-content: end;
+    align-items: end;
+}
+
+.icon-block {
+    width: 20px;
+    display: inline-block;
+}
+
+.sort-icon {
+    display: inline-block;
+    cursor: pointer;
+}
+
+.sort-icon-label {
+    margin-left: 10px;
+    cursor: pointer;
+}
+
+.sort-image {
+    height: 15px;
+}
+
+.search-input,
+.search-button {
+    height: fit-content;
+}
+
+.table-card-header {
+    display: flex;
+}
+
+.table-card-body {
+    min-height: 400px;
+}
+
+.search-container {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.search-matches-label {
+    padding-top: 5px;
+}
+
+.search-form {
+    margin-left: 10px;
+}
+
+#show-total-rows {
+    margin: 0 auto 0 0;
+}
+
+.current-page-pagination-item {
+    width: 50px;
+    text-align: center;
+    box-shadow: 0px 0px 5px rgba(0,0,0,0.5);
+}
+
+.add-button {
+    white-space: pre;
+    margin-left: 20px;
+}
+
+.back-pagination-button {
+    margin-left: 15px;
+}
+
+.add-container,
+.delete-container {
+    height: 100%;
+    padding: 0;
+}
+
+.delete-card-body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.add-form-group {
+    margin-top: 15px;
+}
+
+.add-form {
+    display: flex;
+    flex-direction: column;
+}
+
+.add-form-button,
+.cancel-form-button{
+    width: fit-content;
+}
+
+.invalid-message {
+    color: rgba(255,40,0,0.69);
+}
+
+.add-form-button {
+    margin-right: auto;
+}
+
+.cancel-form-button {
+
+}
+
+.add-cancel-buttons-div {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: auto;
+}
+
+.add-card-body,
+.add-card,
+.add-form {
+    height: 100%;
+}
+
+.delete-icon,
+.edit-icon {
+    width: 25px;
+    padding: 0;
+    margin-right: 15px;
+    cursor: pointer;
+}
+.delete-icon:hover,
+.edit-icon:hover {
+    box-shadow: -10px 10px 3px -5px yellowgreen;
+    /*box-shadow: 0px 20px 30px 0px #54E5C6;*/
+}
+
+.active-link {
+    box-shadow: 0px 10px 5px -5px gray;
+}
+
+.last-row-column {
+    position: relative;
+}
+
+.delete-edit-div {
+    text-align: right;
+    position: absolute;
+    right: 0px;
+    top: 6px;
+}
+
+.show-message {
+    position: fixed;
+    z-index: 999;
+    left: 50%;
+    transition: all 1s;
+    width: 350px;
+    margin-left: -175px;
+    border: solid yellowgreen;
+    margin-top: 10px;
+    text-align: center;
+    border-color: yellowgreen;
+}
+
+.add-edit-window {
+    position: fixed;
+    margin: 0;
+    top: 0;
+    bottom: 0;
+    right: -600px;
+    transition: transform .2s ease 0s,opacity .2s ease 0s;
+    opacity: 1;
+    border: 1px solid rgba(0,0,0,.125);
+    border-radius: 0.25rem;
+}
+
+.delete-window {
+    height: 200px;
+    width: 450px;
+    padding: 0;
+    margin: 0;
+}
+
+.scroll {
+    min-height: 250px;
+    max-height: 100px;
+    overflow-y: auto;
+}
+
+.hystmodal--active .hystmodal__window.add-edit-window {
+    transform: translateX(-600px);
+}
+
+.page-link,
+#number-of-rows-select,
+#number-of-rows-label,
+.sort-icon {
+    -moz-user-select: none;
+    -khtml-user-select: none;
+    -webkit-user-select: none;
+    user-select: none;
+}
+
+a.active.focus,
+a.active:focus,
+a.focus,
+a:active.focus,
+a:active:focus,
+a:focus,
+button.active.focus,
+button.active:focus,
+button.focus,
+button:active.focus,
+button:active:focus,
+button:focus,
+.btn.active.focus,
+.btn.active:focus,
+.btn.focus,
+.btn:active.focus,
+.btn:active:focus,
+.btn:focus {
+    outline: 0 !important;
+    outline-color: transparent !important;
+    outline-width: 0 !important;
+    outline-style: none !important;
+    box-shadow: 0 0 0 0 rgba(0, 123, 255, 0) !important;
+}
