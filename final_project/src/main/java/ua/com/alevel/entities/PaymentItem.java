@@ -3,7 +3,6 @@ package ua.com.alevel.entities;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import ua.com.alevel.entities.BaseEntity;
 
 import javax.persistence.*;
 

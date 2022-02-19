@@ -74,7 +74,6 @@ public class JpaConfig {
         properties.put("spring.jpa.hibernate.ddl-auto", jpaDdlAuto);
         properties.put("spring.jpa.properties.hibernate.dialect", jpaDialect);
         properties.put("spring.jpa.properties.hibernate.current_session_context_class", sessionContextClass);
-//        properties.put("spring.jpa.properties.hibernate.enable_lazy_load_no_trans", lazyLoadNoTrans);
         properties.put("spring.jpa.hibernate.naming.physical-strategy", hibernatePhysicalStrategy);
         return properties;
     }

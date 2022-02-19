@@ -123,6 +123,7 @@ public class CustomerDao implements BaseDao<Customer> {
                 .createQuery(countCriteria)
                 .getSingleResult();
 
+
         return count;
     }
 

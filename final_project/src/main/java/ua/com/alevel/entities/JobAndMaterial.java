@@ -3,11 +3,8 @@ package ua.com.alevel.entities;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import org.hibernate.Hibernate;
 
 import javax.persistence.*;
-import java.util.List;
-import java.util.Objects;
 
 @Entity
 @Table(name = "job_and_materials")
@@ -48,11 +45,11 @@ public class JobAndMaterial extends BaseEntity {
     @Column(name = "is_job")
     private Boolean isJob;
 
-    @OneToOne
+    @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "job_id")
     private Job job;
 
-    @OneToOne
+    @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "product_material_id")
     private ProductMaterial productMaterial;
 

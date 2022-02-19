@@ -20,7 +20,7 @@ public class Payment extends BaseEntity {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "payment_item_id")
+    @JoinColumn(name = "payment_item_id", nullable = false)
     private PaymentItem paymentItem;
 
     @Column(name = "amount")

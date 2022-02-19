@@ -19,8 +19,8 @@ public class ProductMaterial extends BaseEntity {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "category_id")
-    private Category category;
+    @JoinColumn(name = "product_category_id")
+    private ProductCategory productCategory;
 
     @Column(name = "name")
     private String name;
@@ -34,7 +34,7 @@ public class ProductMaterial extends BaseEntity {
     @Column(name = "vendor_code")
     private String vendorCode;
 
-    @Column(name = "description")
+    @Column(name = "is_warranty")
     private Boolean isWarranty;
 
     @Column(name = "zero_cost")

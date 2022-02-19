@@ -24,11 +24,11 @@ public class WarehouseWriteOff extends WarehouseOperation {
 
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
-    @ManyToMany
-    @JoinTable(name = "warehouse_write_off_product_materials",
+    @ManyToMany(cascade = CascadeType.PERSIST)
+    @JoinTable(name = "warehouse_write_off_relocatable_products",
             joinColumns = @JoinColumn(name = "warehouse_write_off_id"),
-            inverseJoinColumns = @JoinColumn(name = "product_materials_id"))
-    private Set<ProductMaterial> productMaterials = new LinkedHashSet<>();
+            inverseJoinColumns = @JoinColumn(name = "relocatable_products_id"))
+    private Set<RelocatableProduct> relocatableProducts = new LinkedHashSet<>();
 
     @Column(name = "description")
     private String description;
@@ -40,5 +40,6 @@ public class WarehouseWriteOff extends WarehouseOperation {
     @Column(name = "date_time")
     @Temporal(TemporalType.TIMESTAMP)
     private Calendar dateTime;
+
 
 }

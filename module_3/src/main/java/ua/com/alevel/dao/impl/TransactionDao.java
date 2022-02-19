@@ -4,12 +4,14 @@ import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.query.Query;
+import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 import ua.com.alevel.dao.BaseDao;
 import ua.com.alevel.entities.Account;
 import ua.com.alevel.entities.Transaction;
 
+import javax.sql.DataSource;
 import java.util.List;
 import java.util.Optional;
 
@@ -20,6 +22,7 @@ public class TransactionDao implements BaseDao<Transaction> {
 
     private final SessionFactory sessionFactory;
     private Session session;
+    DriverManagerDataSource dataSource;
 
     public TransactionDao(SessionFactory sessionFactory) {
         this.sessionFactory = sessionFactory;

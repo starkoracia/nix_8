@@ -7,11 +7,11 @@ import lombok.ToString;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "categories")
+@Table(name = "product_categories")
 @Getter
 @Setter
 @ToString
-public class Category extends BaseEntity {
+public class ProductCategory extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
