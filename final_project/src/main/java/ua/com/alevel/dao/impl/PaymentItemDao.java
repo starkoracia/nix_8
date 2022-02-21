@@ -71,4 +71,11 @@ public class PaymentItemDao implements DaoPaymentItem {
                 .getSingleResult();
     }
 
+    public PaymentItem getLastCreatedItem() {
+        PaymentItem item = (PaymentItem) entityManager.createQuery("select i from PaymentItem i where" +
+                        " i.id=(select max(i.id) from PaymentItem i)")
+                .getSingleResult();
+        return item;
+    }
+
 }

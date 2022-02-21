@@ -143,4 +143,12 @@ public class ClientDao implements DaoClient {
                 .getSingleResult();
     }
 
+    public Client getLastCreatedClient() {
+        Client client = (Client) entityManager
+                .createQuery("select c from Client c where " +
+                        "c.id=(select max(c.id) from Client c)")
+                .getSingleResult();
+        return client;
+    }
+
 }

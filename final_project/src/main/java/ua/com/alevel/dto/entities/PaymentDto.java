@@ -32,8 +32,8 @@ public class PaymentDto extends BaseDto<Payment> {
         payment.setBalanceAfter(this.balanceAfter);
         payment.setComment(this.comment);
         payment.setCashier(this.cashier.toEmployee());
-        payment.setClient(this.client.toClient());
-        payment.setOrder(this.order.toOrder());
+        payment.setClient(this.client != null ? this.client.toClient() : null);
+        payment.setOrder(this.order != null ? this.order.toOrder() : null);
         return payment;
     }
 

@@ -11,6 +11,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.Query;
 import javax.persistence.criteria.*;
 import javax.persistence.criteria.Order;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -69,30 +70,53 @@ public class PaymentDao implements DaoPayment {
         return paymentList;
     }
 
-//    public List<Client> findAllFromRequest(PageDataRequest request) {
-//        int limitAmount = request.getNumberOfElementsOnPage();
-//        int limitFrom = (request.getPageNumber() - 1) * limitAmount;
-//        String sortBy = request.getSortBy();
-//        Boolean isSortAsc = request.getIsSortAsc();
-//        String search = "%" + request.getSearchString() + "%";
-//
-//        CriteriaBuilder cb = entityManager.getCriteriaBuilder();
-//        CriteriaQuery<Payment> paymentCriteria = cb.createQuery(Payment.class);
-//        Root<Payment> paymentRoot = paymentCriteria.from(Payment.class);
-//
-//        Join<Payment, PaymentItem> itemJoin = paymentRoot.join(Payment_.paymentItem);
-//        Join<Payment, Employee> cashierJoin = paymentRoot.join(Payment_.cashier);
-//        Join<Payment, Client> clientJoin = paymentRoot.join(Payment_.client);
-//
-//        Predicate searchPredicate = createSearchPredicate(search, cb, paymentRoot, itemJoin,
-//                cashierJoin, clientJoin);
-//        Order order = cb.asc(paymentRoot.get("id"));
-//
-//        if(sortBy.equals(Payment_.))
-//
-//        return null;
-//
-//    }
+    public List<Payment> findAllFromRequest(PageDataRequest request) {
+        int limitAmount = request.getNumberOfElementsOnPage();
+        int limitFrom = (request.getPageNumber() - 1) * limitAmount;
+        String sortBy = request.getSortBy();
+        Boolean isSortAsc = request.getIsSortAsc();
+        String search = "%" + request.getSearchString() + "%";
+
+        CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+        CriteriaQuery<Payment> paymentCriteria = cb.createQuery(Payment.class);
+        Root<Payment> paymentRoot = paymentCriteria.from(Payment.class);
+
+        Join<Payment, PaymentItem> itemJoin = paymentRoot.join(Payment_.paymentItem);
+        Join<Payment, Employee> cashierJoin = paymentRoot.join(Payment_.cashier);
+        Join<Payment, Client> clientJoin = paymentRoot.join(Payment_.client, JoinType.LEFT);
+
+        Predicate searchPredicate = createSearchPredicate(search, cb, paymentRoot, itemJoin,
+                cashierJoin, clientJoin);
+        Order order = cb.asc(paymentRoot.get("id"));
+
+        if(sortBy.equals(Payment_.ID) || sortBy.equals(Payment_.DATE_TIME)
+        || sortBy.equals(Payment_.PAYMENT_ITEM) || sortBy.equals(Payment_.AMOUNT)
+        || sortBy.equals(Payment_.BALANCE_AFTER)) {
+            if(isSortAsc) {
+                order = cb.asc(paymentRoot.get(sortBy));
+            } else {
+                order = cb.desc(paymentRoot.get(sortBy));
+            }
+        } else if (sortBy.equals(Payment_.CLIENT)) {
+            if(isSortAsc) {
+                order = cb.asc(clientJoin.get(Client_.name));
+            } else {
+                order = cb.desc(clientJoin.get(Client_.name));
+            }
+        }
+
+        paymentCriteria
+                .select(paymentRoot)
+                .where(searchPredicate)
+                .orderBy(order);
+
+        List<Payment> paymentList = entityManager.createQuery(paymentCriteria)
+                .setFirstResult(limitFrom)
+                .setMaxResults(limitAmount)
+                .getResultList();
+
+        return paymentList;
+    }
 
     private Predicate createSearchPredicate(
             String search, CriteriaBuilder cb, Root<Payment> paymentRoot,
@@ -111,11 +135,44 @@ public class PaymentDao implements DaoPayment {
         return cb.or(predicates.toArray(Predicate[]::new));
     }
 
+    public Long countNumberOfSearchMatches(PageDataRequest request) {
+        String search = "%" + request.getSearchString() + "%";
+
+        CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+        CriteriaQuery<Long> countCriteria = cb.createQuery(Long.class);
+        Root<Payment> paymentRoot = countCriteria.from(Payment.class);
+
+        Join<Payment, PaymentItem> itemJoin = paymentRoot.join(Payment_.paymentItem);
+        Join<Payment, Employee> cashierJoin = paymentRoot.join(Payment_.cashier);
+        Join<Payment, Client> clientJoin = paymentRoot.join(Payment_.client, JoinType.LEFT);
+
+        Predicate searchPredicate = createSearchPredicate(search, cb, paymentRoot, itemJoin,
+                cashierJoin, clientJoin);
+
+        countCriteria
+                .select(cb.count(paymentRoot))
+                .where(searchPredicate);
+
+        Long count = entityManager
+                .createQuery(countCriteria)
+                .getSingleResult();
+
+        return count;
+    }
+
     @Override
     public Long count() {
         return (Long) entityManager
                 .createQuery("select count(pm) from Payment pm")
                 .getSingleResult();
+    }
+
+    public BigDecimal getBalanceFromLastPayment() {
+        BigDecimal balance = (BigDecimal) entityManager
+                .createQuery("select p.balanceAfter from Payment p where " +
+                        "p.id=(select max(p.id) from Payment p)")
+                .getSingleResult();
+        return balance;
     }
 
 }

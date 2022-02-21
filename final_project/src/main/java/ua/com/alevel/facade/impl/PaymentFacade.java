@@ -8,6 +8,7 @@ import ua.com.alevel.entities.Payment;
 import ua.com.alevel.facade.FacadePayment;
 import ua.com.alevel.services.impl.PaymentService;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
@@ -53,17 +54,21 @@ public class PaymentFacade implements FacadePayment {
 
     @Override
     public PageDataResponse<PaymentDto> findAllFromRequest(PageDataRequest request) {
-        return null;
+        return paymentService.findAllFromRequest(request);
     }
 
     @Override
     public Long countNumberOfSearchMatches(PageDataRequest request) {
-        return null;
+        return paymentService.countNumberOfSearchMatches(request);
     }
 
     @Override
     public Long count() {
         return paymentService.count();
+    }
+
+    public BigDecimal getBalanceFromLastPayment() {
+        return paymentService.getBalanceFromLastPayment();
     }
 
 }

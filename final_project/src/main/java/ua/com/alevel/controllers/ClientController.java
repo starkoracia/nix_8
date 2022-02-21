@@ -6,6 +6,8 @@ import ua.com.alevel.dto.PageDataResponse;
 import ua.com.alevel.dto.entities.ClientDto;
 import ua.com.alevel.facade.impl.ClientFacade;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/clients")
 @CrossOrigin(origins = "http://localhost:3000")
@@ -17,8 +19,14 @@ public class ClientController {
         this.clientFacade = clientFacade;
     }
 
+    @GetMapping()
+    public List<ClientDto> clients() {
+        List<ClientDto> clientDtos = clientFacade.findAll();
+        return clientDtos;
+    }
+
     @PostMapping()
-    public PageDataResponse<ClientDto> clients(@RequestBody PageDataRequest request) {
+    public PageDataResponse<ClientDto> clientsFromRequest(@RequestBody PageDataRequest request) {
         PageDataResponse<ClientDto> dataResponse = clientFacade.findAllFromRequest(request);
         return dataResponse;
     }
@@ -38,6 +46,11 @@ public class ClientController {
     public Boolean editClient(@RequestBody ClientDto dto) {
         clientFacade.update(dto);
         return true;
+    }
+
+    @GetMapping("/last")
+    public ClientDto getLastCreatedClient() {
+        return clientFacade.getLastCreatedClient();
     }
 
 }

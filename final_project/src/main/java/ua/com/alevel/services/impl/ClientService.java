@@ -70,4 +70,9 @@ public class ClientService implements ServiceClient {
     public Long countNumberOfSearchMatches(PageDataRequest request) {
         return clientDao.countNumberOfSearchMatches(request);
     }
+
+    public Client getLastCreatedClient() {
+        return clientDao.getLastCreatedClient();
+    }
+
 }

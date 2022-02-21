@@ -11,7 +11,7 @@ VALUES ('Питер Паркер', 'spidey@gmail.com', '380981230303', false, '�
 INSERT INTO employees (name, email, mobile, position)
 VALUES ('Джони Аксельрод', 'axecap@gmai.com', '38679999999', 2);
 INSERT INTO employees (name, email, mobile, position)
-VALUES ('Лекс Лютер', 'lutercorp@gmai.com', '38677774444', 3);
+VALUES ('Лекс Лютер', 'lutercorp@gmai.com', '38677774444', 1);
 
 INSERT job (name, price, warranty)
 VALUES ('Замена модуля', 450, null);
@@ -50,7 +50,7 @@ INSERT INTO payments
 (payment_item_id, amount, income, date_time,
  balance_before, balance_after, comment,
  employee_id, client_id, order_id)
-VALUES (1, 300, false, '2022-02-15 13:00:02', 0, -300, null, 1, 2, null);
+VALUES (1, 300, false, '2022-02-15 13:00:02', 0, -300, 'Оплата за заказ', 1, 2, null);
 
 INSERT INTO warehouse_posting
     (supplier_id, description, employee_id, date_time, payment_id)

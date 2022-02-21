@@ -66,4 +66,8 @@ public class ClientFacade implements FacadeClient {
         return clientService.countNumberOfSearchMatches(request);
     }
 
+    public ClientDto getLastCreatedClient() {
+        return ClientDto.toDto(clientService.getLastCreatedClient());
+    }
+
 }
